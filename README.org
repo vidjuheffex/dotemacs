@@ -1,0 +1,7 @@
+* Emacs Literate Config
+** Description
+This is my literate emacs config, I mainly code for the web so it leans heavily in that direction.
+
+** How to use
+The actual [[file:emacs.org::*Configuration][configuration]] is an org file
+The [[file:init.el::(require%20'org)][init]] file simply calls this org file and evaluates the contents of the source blocks.

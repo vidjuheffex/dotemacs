@@ -677,6 +677,3 @@ Set titlebar style
   (use-package fountain-mode
     :ensure t)
 #+END_SRC
-
-     
-

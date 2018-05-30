@@ -14,7 +14,7 @@
  '(cua-read-only-cursor-color "#859900")
  '(custom-safe-themes
    (quote
-    ("551596f9165514c617c99ad6ce13196d6e7caa7035cea92a0e143dbe7b28be0e" "c3d4af771cbe0501d5a865656802788a9a0ff9cf10a7df704ec8b8ef69017c68" default)))
+    ("9a155066ec746201156bb39f7518c1828a73d67742e11271e4f24b7b178c4710" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "551596f9165514c617c99ad6ce13196d6e7caa7035cea92a0e143dbe7b28be0e" "c3d4af771cbe0501d5a865656802788a9a0ff9cf10a7df704ec8b8ef69017c68" default)))
  '(fci-rule-color "#3C3D37")
  '(helm-source-names-using-follow (quote ("Projectile files" "Imenu")))
  '(highlight-changes-colors (quote ("#FD5FF0" "#AE81FF")))
@@ -41,13 +41,14 @@
    (quote
     ("#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3")))
  '(hl-paren-colors (quote ("#2aa198" "#b58900" "#268bd2" "#6c71c4" "#859900")))
+ '(hl-sexp-background-color "#efebe9")
  '(magit-diff-use-overlays nil)
  '(nrepl-message-colors
    (quote
     ("#dc322f" "#cb4b16" "#b58900" "#546E00" "#B4C342" "#00629D" "#2aa198" "#d33682" "#6c71c4")))
  '(package-selected-packages
    (quote
-    (leuven-theme helm-dash toc-org solarized-theme xterm-color ob-async js2-mode company yasnippet flycheck multiple-cursors helm smex dired-subtree ob-restclient dedicated git-link ibuffer-sidebar buffer-sidebar dired-sidebar projectile-speedbar sr-speedbar company-quickhelp all-the-icons abyss-theme visual-regexp smartparens company-box monokai-theme fountain-mode company-lua lua-mode geiser markdown-mode company-jedi python-mode js2-highlight-vars company-lsp lsp-javascript-typescript lsp-mode zone-nyan wgrep web-mode use-package undo-tree tide switch-buffer-functions rjsx-mode restclient rainbow-mode rainbow-delimiters neotree moe-theme magit json-mode js2-refactor js-doc indium impatient-mode helm-swoop helm-smex helm-projectile helm-fuzzier helm-flx helm-ag golden-ratio-scroll-screen git-gutter-fringe expand-region exec-path-from-shell eslint-fix emmet-mode editorconfig duplicate-thing diminish diff-hl company-web company-tern browse-at-remote add-node-modules-path adaptive-wrap ace-window 2048-game)))
+    (powerline telephone-line leuven-theme helm-dash toc-org solarized-theme xterm-color ob-async js2-mode company yasnippet flycheck multiple-cursors helm smex dired-subtree ob-restclient dedicated git-link ibuffer-sidebar buffer-sidebar dired-sidebar projectile-speedbar sr-speedbar company-quickhelp all-the-icons abyss-theme visual-regexp smartparens company-box monokai-theme fountain-mode company-lua lua-mode geiser markdown-mode company-jedi python-mode js2-highlight-vars company-lsp lsp-javascript-typescript lsp-mode zone-nyan wgrep web-mode use-package undo-tree tide switch-buffer-functions rjsx-mode restclient rainbow-mode rainbow-delimiters neotree moe-theme magit json-mode js2-refactor js-doc indium impatient-mode helm-swoop helm-smex helm-projectile helm-fuzzier helm-flx helm-ag golden-ratio-scroll-screen git-gutter-fringe expand-region exec-path-from-shell eslint-fix emmet-mode editorconfig duplicate-thing diminish diff-hl company-web company-tern browse-at-remote add-node-modules-path adaptive-wrap ace-window 2048-game)))
  '(pos-tip-background-color "#FFFACE")
  '(pos-tip-foreground-color "#272822")
  '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#eee8d5" 0.2))

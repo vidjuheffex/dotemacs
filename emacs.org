@@ -7,20 +7,20 @@
   - [[#package-management][Package Management]]
   - [[#editor-configuration][Editor Configuration]]
   - [[#package-configuration][Package Configuration]]
-      - [[#general][General]]
-        - [[#helm][Helm]]
-        - [[#git][Git]]
-        - [[#org][Org]]
-        - [[#company][Company]]
-      - [[#languages][Languages]]
-        - [[#javascript][Javascript]]
-        - [[#json][JSON]]
-        - [[#web][Web]]
-        - [[#python][Python]]
-        - [[#markdown][Markdown]]
-        - [[#scheme][Scheme]]
-        - [[#lua][Lua]]
-        - [[#fountain][Fountain]]
+    - [[#general][General]]
+      - [[#helm][Helm]]
+      - [[#git][Git]]
+      - [[#org][Org]]
+      - [[#company][Company]]
+    - [[#languages][Languages]]
+      - [[#javascript][Javascript]]
+      - [[#json][JSON]]
+      - [[#web][Web]]
+      - [[#python][Python]]
+      - [[#markdown][Markdown]]
+      - [[#scheme][Scheme]]
+      - [[#lua][Lua]]
+      - [[#fountain][Fountain]]
 
 * Configuration
 
@@ -217,7 +217,7 @@ Set titlebar style
 
 ** Package Configuration
 
-**** General
+*** General
 #+BEGIN_SRC emacs-lisp
   (use-package leuven-theme
     :ensure t
@@ -348,7 +348,7 @@ Set titlebar style
 
 #+END_SRC
 
-***** Helm
+**** Helm
 #+BEGIN_SRC emacs-lisp
   (use-package helm
     :ensure t
@@ -414,7 +414,7 @@ Set titlebar style
     :after (helm))
 #+END_SRC
 
-***** Git
+**** Git
 #+BEGIN_SRC emacs-lisp
   (use-package magit
     :ensure t
@@ -458,7 +458,7 @@ Set titlebar style
     (global-diff-hl-mode))
 #+END_SRC
 
-***** Org
+**** Org
 #+BEGIN_SRC emacs-lisp
   (use-package org
     :ensure t
@@ -486,7 +486,7 @@ Set titlebar style
     :hook (org-mode . toc-org-enable))
 #+END_SRC
 
-***** Company
+**** Company
 #+BEGIN_SRC emacs-lisp
   (use-package company
     :ensure t
@@ -510,9 +510,9 @@ Set titlebar style
 #+END_SRC
 
 
-**** Languages
+*** Languages
 
-***** Javascript
+**** Javascript
 #+BEGIN_SRC emacs-lisp
   (use-package eslint-fix
     :ensure t)
@@ -574,7 +574,7 @@ Set titlebar style
     :hook (js2-mode . indium-interaction-mode))
 #+END_SRC
 
-***** JSON
+**** JSON
 #+BEGIN_SRC emacs-lisp
   ;;JSON
 
@@ -585,7 +585,7 @@ Set titlebar style
 	   ("\\.tern-project\\'" . json-mode)))
 #+END_SRC
 
-***** Web
+**** Web
 #+BEGIN_SRC emacs-lisp
   (use-package web-mode
     :ensure t
@@ -629,7 +629,7 @@ Set titlebar style
     :hook css-mode)
 #+END_SRC
 
-***** Python
+**** Python
 #+BEGIN_SRC emacs-lisp
   (use-package python-mode
     :ensure t)
@@ -640,7 +640,7 @@ Set titlebar style
     (add-hook 'python-mode-hook (add-to-list 'company-backends 'company-jedi)))
 #+END_SRC
 
-***** Markdown
+**** Markdown
 #+BEGIN_SRC emacs-lisp
   (use-package markdown-mode
     :ensure t
@@ -653,13 +653,13 @@ Set titlebar style
     (setq markdown-header-scaling t))
 #+END_SRC
 
-***** Scheme
+**** Scheme
 #+BEGIN_SRC emacs-lisp
   (use-package geiser
     :ensure t)
 #+END_SRC
 
-***** Lua
+**** Lua
 #+BEGIN_SRC emacs-lisp
   (use-package lua-mode
     :ensure t
@@ -672,7 +672,7 @@ Set titlebar style
 			       (add-to-list 'company-backends 'company-lua))))
 #+END_SRC
 
-***** Fountain
+**** Fountain
 #+BEGIN_SRC emacs-lisp
   (use-package fountain-mode
     :ensure t)

@@ -1,0 +1,682 @@
+#+TITLE: Emacs Configuration
+#+AUTHOR: Julian Herrera
+#+PROPERTY: header-args :tangle yes
+
+* Table Of Contents :TOC_5_gh:
+- [[#configuration][Configuration]]
+  - [[#package-management][Package Management]]
+  - [[#editor-configuration][Editor Configuration]]
+  - [[#package-configuration][Package Configuration]]
+      - [[#general][General]]
+        - [[#helm][Helm]]
+        - [[#git][Git]]
+        - [[#org][Org]]
+        - [[#company][Company]]
+      - [[#languages][Languages]]
+        - [[#javascript][Javascript]]
+        - [[#json][JSON]]
+        - [[#web][Web]]
+        - [[#python][Python]]
+        - [[#markdown][Markdown]]
+        - [[#scheme][Scheme]]
+        - [[#lua][Lua]]
+        - [[#fountain][Fountain]]
+
+* Configuration
+
+** Package Management :noexport_1:
+
+*** First we're going to add [[melpa.org][melpa]] as a source for packages
+ #+BEGIN_SRC emacs-lisp
+   (require 'package)
+   (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
+		       (not (gnutls-available-p))))
+	  (proto (if no-ssl "http" "https")))
+     ;; Comment/uncomment these two lines to enable/disable MELPA and MELPA Stable as desired
+     (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
+     ;;(add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
+     (when (< emacs-major-version 24)
+       ;; For important compatibility libraries like cl-lib
+       (add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))))
+   (package-initialize)
+ #+END_SRC
+
+*** Then we make sure [[https://github.com/jwiegley/use-package][use-package]] is available, if it's not we install it.
+ #+BEGIN_SRC emacs-lisp
+   (unless (package-installed-p 'use-package)
+     (package-refresh-contents)
+     (package-install 'use-package))
+ #+END_SRC 
+
+** Editor Configuration :noexport_1:
+
+*** Keep changes from 'customize' in a seperate file
+ #+BEGIN_SRC emacs-lisp
+   (setq custom-file "~/.emacs.d/.emacs-customize.el")
+   (load custom-file)
+ #+END_SRC
+
+*** Save all backups in one place
+ #+BEGIN_SRC emacs-lisp
+    (setq backup-directory-alist
+          `(("." . ,(concat user-emacs-directory "backups"))))
+ #+END_SRC
+
+*** Use `y' or `n' everywhere instead of 'yes' or 'no'
+
+ #+BEGIN_SRC emacs-lisp
+   (fset 'yes-or-no-p 'y-or-n-p)
+ #+END_SRC
+
+*** Enable shift+arrow keys to change active window
+#+BEGIN_SRC emacs-lisp
+  (windmove-default-keybindings)
+#+END_SRC
+
+*** On some touchpads mouse-2 annoys me (middle wheel click), disable it
+#+BEGIN_SRC emacs-lisp
+  (global-unset-key [mouse-2])
+#+END_SRC
+
+*** Enable and configure recentf-mode (recent-files)
+#+BEGIN_SRC emacs-lisp
+  (recentf-mode 1)
+  (setq recentf-max-saved-items 200)
+  (setq recentf-max-menu-items 50)
+  (setq recentf-exclude '("^/var/folders\\.*"
+			  "COMMIT_EDITMSG\\'"
+			  ".*-autoloads\\.el\\'"
+			  "[/\\]\\.elpa/"
+			  ))
+#+END_SRC
+
+*** Customize titlebar
+Show path to file and, if available, the project name.
+Set titlebar style
+#+BEGIN_SRC emacs-lisp
+(defun frame-title-format ()
+  "Return frame title with current project name, where applicable."
+  (concat
+   "emacs - "
+   (when (and (bound-and-true-p projectile-mode)
+              (projectile-project-p))
+     (format "[%s] - " (projectile-project-name)))
+   (let ((file buffer-file-name))
+     (if file
+          (abbreviate-file-name file)
+       "%b"))))
+
+(setq-default frame-title-format '((:eval (frame-title-format))))
+(add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+#+END_SRC
+
+*** Various small quality of life changes
+#+BEGIN_SRC emacs-lisp
+  (scroll-bar-mode 0)
+  (tool-bar-mode 0)
+  (menu-bar-mode 0)
+  (delete-selection-mode 1)
+  (global-auto-revert-mode 1)
+  (line-number-mode 1)
+  (column-number-mode 1)
+  (show-paren-mode 1)
+  (global-hl-line-mode 1)
+  (eldoc-mode 1)
+#+END_SRC
+
+*** Enable toggle code foldings with C-c @ C-c
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'prog-mode-hook (lambda () (interactive)(hs-minor-mode 1)))
+#+END_SRC
+
+*** Enable undo window layout changes with C-c Left and C-c Right
+#+BEGIN_SRC emacs-lisp
+  (winner-mode 1)
+#+END_SRC
+
+*** Adjust some editor variables
+#+BEGIN_SRC emacs-lisp
+  (setq inhibit-startup-screen t)
+  (setq ring-bell-function 'ignore)
+#+END_SRC
+
+*** Set a custom font
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'default-frame-alist '(font . "Monofur 12"))
+#+END_SRC
+
+*** Override a couple of default keybindings
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-s") 'isearch-forward-regexp)
+(global-set-key (kbd "C-r") 'isearch-backward-regexp)
+(global-set-key (kbd "C-M-s") 'isearch-forward)
+(global-set-key (kbd "C-M-r") 'isearch-backward)
+
+(global-set-key [remap dabbrev-expand] 'hippie-expand)
+#+END_SRC
+
+*** Set file encoding preferences
+#+BEGIN_SRC emacs-lisp
+  (prefer-coding-system 'utf-8)
+  (set-default-coding-systems 'utf-8)
+  (set-terminal-coding-system 'utf-8)
+  (set-keyboard-coding-system 'utf-8)
+  (setq-default buffer-file-coding-system 'utf-8-unix)
+#+END_SRC
+
+*** Provide a function to correct line endings
+#+BEGIN_SRC emacs-lisp
+  (defun dos2unix ()
+    "Replace DOS eolns CR LF with Unix eolns CR"
+    (interactive)
+      (goto-char (point-min))
+      (while (search-forward "\r" nil t) (replace-match "")))
+#+END_SRC
+
+*** Add some hooks for saving buffers
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'focus-out-hook (lambda () (interactive)(save-some-buffers t)))
+  ;; save when frame is closed
+  (add-hook 'delete-frame-functions (lambda () (interactive)(save-some-buffers t)))
+#+END_SRC
+
+*** Replace beginning of line with context-dependent 'jump-to-beginning'
+#+BEGIN_SRC emacs-lisp
+  (defun back-to-indentation-or-beginning ()
+    "Replace jump-to-beginning with jump-to-indentation."
+    (interactive)
+	 (if (= (point) (progn (back-to-indentation) (point)))
+	     (beginning-of-line)))
+
+  (global-set-key (kbd "C-a") 'back-to-indentation-or-beginning)
+#+END_SRC
+
+*** Provide custom buffer-cleanup functions
+#+BEGIN_SRC emacs-lisp
+  (defun kill-dired-buffers ()
+    "Kill all dired buffers."
+    (interactive)
+    (mapc (lambda (buffer)
+	    (when (eq 'dired-mode (buffer-local-value 'major-mode buffer)) 
+	      (kill-buffer buffer))) 
+	  (buffer-list)))
+
+   (defun kill-other-buffers ()
+	"Kill all other buffers."
+	(interactive)
+	(mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
+#+END_SRC
+
+*** Mac-specific key-binding changes
+#+BEGIN_SRC emacs-lisp
+(when (eq system-type 'darwin)
+  (setq mac-command-modifier 'meta)
+  (setq mac-option-modifier nil))
+
+#+END_SRC
+
+** Package Configuration
+
+**** General
+#+BEGIN_SRC emacs-lisp
+  (use-package leuven-theme
+    :ensure t
+    :config
+    (load-theme 'leuven 'no-confirm))
+
+  (use-package golden-ratio-scroll-screen
+    :ensure t
+    :bind(([remap scroll-down-command] . golden-ratio-scroll-screen-down)
+	  ([remap scroll-up-command] . golden-ratio-scroll-screen-up)))
+
+  (use-package undo-tree
+    :ensure t
+    :diminish undo-tree-mode
+    :demand
+    :config
+    (global-undo-tree-mode)
+    :bind(("C-z" . undo-tree-undo)
+	  ("C-M-z" . undo-tree-redo)))
+
+  (use-package dired-subtree
+    :ensure t)
+
+  (use-package dired-sidebar
+    :ensure t)
+
+  (use-package ibuffer
+    :bind( "C-x C-b" . ibuffer))
+
+  (use-package ibuffer-sidebar
+    :after (ibuffer)
+    :ensure t)
+
+  (use-package editorconfig
+    :ensure t
+    :config
+    (editorconfig-mode 1))
+
+  (use-package wgrep
+    :ensure t)
+
+  (use-package smex
+    :ensure t)
+
+  (use-package dedicated
+    :ensure t)
+
+  (use-package ace-window
+    :ensure t
+    :bind("M-`" . ace-window)
+    :init
+    (setq aw-dispatch-always t))
+
+  (use-package multiple-cursors
+    :ensure t
+    :bind(("C-c /" . mc/edit-lines)
+	  ("C->" . mc/mark-next-like-this)
+	  ("C-<" . mc/mark-previous-like-this)
+	  ("C-c C-<" . mc/mark-all-like-this)))
+
+`  (use-package switch-buffer-functions
+    :ensure t
+    :init
+    (add-hook 'switch-buffer-functions (lambda (prev cur) (interactive)(save-some-buffers t))))
+
+  (use-package flycheck
+    :ensure t
+    :defer 1
+    :diminish (flycheck-mode . "Fly")
+    :hook 
+    (after-init . global-flycheck-mode))
+
+  (use-package adaptive-wrap
+    :ensure t)
+
+  (use-package yasnippet
+    :ensure t
+    :diminish yas-minor-mode
+    :hook
+    (prog-mode . yas-minor-mode)
+    :config
+    (yas-reload-all))
+
+  (use-package duplicate-thing
+    :ensure t
+    :bind(("C-c C-d" . duplicate-thing)))
+
+  (use-package exec-path-from-shell
+    :if (memq window-system '(mac ns x))
+    :ensure t
+    :config
+    (exec-path-from-shell-initialize))
+
+  (use-package visual-regexp
+    :ensure t)
+
+  (use-package smartparens
+    :ensure t
+    :init
+    (require 'smartparens-config)
+    :hook (prog-mode . smartparens-strict-mode))
+
+  (use-package projectile
+    :ensure t
+    :demand
+    :init
+    (setq projectile-switch-project-action 'projectile-vc)
+    (setq projectile-mode-line
+	  '(:eval
+	    (format " Pr[%s]"
+		    (projectile-project-name))))
+    :config
+    (projectile-mode))
+
+  (use-package expand-region
+    :ensure t
+    :bind("C-=" . er/expand-region))
+
+  (use-package diminish
+    :ensure t
+    :config
+    (diminish 'auto-revert-mode))
+
+  (use-package rainbow-delimiters
+    :ensure t
+    :init
+    (add-hook 'prog-mode-hook 'rainbow-delimiters-mode-enable))
+
+#+END_SRC
+
+***** Helm
+#+BEGIN_SRC emacs-lisp
+  (use-package helm
+    :ensure t
+    :demand
+    :diminish helm-mode
+    :init
+    (setq helm-mode-fuzzy-match t)
+    (setq helm-completion-in-region-fuzzy-match t)
+    (setq helm-echo-input-in-header-line t)
+    (setq helm-follow-mode-persistent t)
+    (setq helm-split-window-inside-p t)
+    :bind(("C-x f" . helm-recentf)
+	  ("C-x b" . helm-mini)
+	  ("C-c s" . helm-occur)
+	  ("C-c S" . helm-moccur)
+	  ("C-x C-b" . helm-buffers-list)
+	  ("C-x C-f" . helm-find-files)
+	  ("C-x C-r" . helm-resume))
+    :config
+    (helm-mode 1))
+
+  (use-package helm-swoop
+    :after (helm)
+    :ensure t
+    :bind
+    (("M-i" . helm-swoop)
+     ("C-c M-i" . helm-multi-swoop)
+     ("M-I" . helm-swoop-back-to-last-point)
+     ("C-x M-i" . helm-multi-swoop-all)))
+
+  (use-package helm-smex
+    :ensure t
+    :after (helm smex)
+    :init
+    (setq helm-smex-show-bindings t)
+    :bind(([remap execute-extended-command] . helm-smex)
+	  ("M-X" . helm-smex-major-mode-commands)))
+
+  (use-package helm-projectile
+    :ensure t
+    :after (projectile helm)
+    :config
+    (helm-projectile-on))
+
+  (use-package helm-flx
+    :ensure t
+    :after (helm)
+    :config
+    (helm-flx-mode +1))
+
+  (use-package helm-fuzzier
+    :ensure t
+    :after (helm)
+    :config
+    (helm-fuzzier-mode +1))
+
+  (use-package helm-ag
+    :ensure t
+    :after (helm))
+
+  (use-package helm-dash
+    :ensure t
+    :after (helm))
+#+END_SRC
+
+***** Git
+#+BEGIN_SRC emacs-lisp
+  (use-package magit
+    :ensure t
+    :init
+    (setq magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1 )
+    :bind("C-x g" . magit-status)
+    :config
+    ;; Protect against accident pushes to upstream
+    (defadvice magit-push-current-to-upstream
+	(around my-protect-accidental-magit-push-current-to-upstream)
+      "Protect against accidental push to upstream.
+
+      Causes `magit-git-push' to ask the user for confirmation first."
+      (let ((my-magit-ask-before-push t))
+	ad-do-it))
+
+    (defadvice magit-git-push (around my-protect-accidental-magit-git-push)
+      "Maybe ask the user for confirmation before pushing.
+
+      Advice to `magit-push-current-to-upstream' triggers this query."
+      (if (bound-and-true-p my-magit-ask-before-push)
+	  ;; Arglist is (BRANCH TARGET ARGS)
+	  (if (yes-or-no-p (format "Push %s branch upstream to %s? "
+				   (ad-get-arg 0) (ad-get-arg 1)))
+	      ad-do-it
+	    (error "Push to upstream aborted by user"))
+	ad-do-it))
+
+    (ad-activate 'magit-push-current-to-upstream)
+    (ad-activate 'magit-git-push))
+
+  (use-package git-link
+    :ensure t)
+
+  (use-package gitignore-mode
+    :ensure t)
+
+  (use-package diff-hl
+    :ensure t
+    :config
+    (global-diff-hl-mode))
+#+END_SRC
+
+***** Org
+#+BEGIN_SRC emacs-lisp
+  (use-package org
+    :ensure t
+    :init
+    (setq org-src-fontify-natively t)
+    (setq org-src-tab-acts-natively t)
+    (setq org-confirm-babel-evaluate nil)
+    (setq org-agenda-files (list "~/Dropbox/org/notes.org"
+				 "~/Dropbox/org/personal.org"))
+    :bind
+    (("C-c l" . 'org-store-link)
+     ("C-c a" . 'org-agenda))
+    :config
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((restclient . t)
+       (js . t))))
+
+  (use-package ob-restclient
+    :ensure t)
+
+  (use-package toc-org
+    :ensure t
+    :after org
+    :hook (org-mode . toc-org-enable))
+#+END_SRC
+
+***** Company
+#+BEGIN_SRC emacs-lisp
+  (use-package company
+    :ensure t
+    :diminish company-mode
+    :demand
+    :init
+    (setq company-idle-delay 0.3)
+    (setq company-begin-commands '(self-insert-command))
+    (setq company-minimum-prefix-length 1)
+    (setq company-tooltip-align-annotations t)
+    (setq company-tooltip-limit 20)
+    (setq company-dabbrev-downcase nil)
+    :config
+    (global-company-mode))
+
+  (use-package company-quickhelp
+    :ensure t
+    :after (company)
+    :config
+    (company-quickhelp-mode))
+#+END_SRC
+
+
+**** Languages
+
+***** Javascript
+#+BEGIN_SRC emacs-lisp
+  (use-package eslint-fix
+    :ensure t)
+
+  (use-package js2-mode
+    :ensure t
+    :init
+    (setq js2-include-node-externs t)
+    (setq js2-include-browser-externs t)
+    (setq js2-mode-show-parse-errors nil)
+    (setq js2-mode-show-strict-warnings nil)
+    :config
+    (js2-imenu-extras-mode))
+
+  (use-package rjsx-mode
+    :ensure t
+    :mode(("\\.js\\'" . rjsx-mode)
+	  ("\\.jsx\\'" . rjsx-mode)))
+
+  (defadvice js-jsx-indent-line (after js-jsx-indent-line-after-hack activate)
+    "Workaround 'sgml-mode' and follow airbnb component style."
+    (save-match-data
+      (save-excursion
+	(goto-char (line-beginning-position))
+	(when (looking-at "^\\( +\\)\/?> *$")
+	  (let ((empty-spaces (match-string 1)))
+	    (while (search-forward empty-spaces (line-end-position) t)
+	      (replace-match (make-string (- (length empty-spaces) sgml-basic-offset)
+					  32))))))))
+
+  (use-package js2-refactor
+    :ensure t
+    :hook (js2-mode . js2-refactor-mode)
+    :config
+    (js2r-add-keybindings-with-prefix "C-c C-m"))
+
+  (use-package add-node-modules-path
+    :ensure t
+    :hook (js2-mode . add-node-modules-path))
+
+  (defun setup-tide-mode ()
+    "Custom Tide setup function."
+    (interactive)
+    (tide-setup)
+    (flycheck-mode +1)
+    (setq flycheck-check-syntax-automatically '(save mode-enabled))
+    (eldoc-mode +1)
+    (tide-hl-identifier-mode +1)
+    (company-mode +1))
+
+  (use-package tide
+    :ensure t
+    :hook
+    (js2-mode . setup-tide-mode))
+
+  (use-package indium
+    :ensure t
+    :diminish (indium-interaction-mode . "In" )
+    :hook (js2-mode . indium-interaction-mode))
+#+END_SRC
+
+***** JSON
+#+BEGIN_SRC emacs-lisp
+  ;;JSON
+
+  (use-package json-mode
+    :ensure t
+    :mode (("\\.json\\'" . json-mode)
+	   ("\\manifest.webapp\\'" . json-mode )
+	   ("\\.tern-project\\'" . json-mode)))
+#+END_SRC
+
+***** Web
+#+BEGIN_SRC emacs-lisp
+  (use-package web-mode
+    :ensure t
+    :mode (("\\.phtml\\'" . web-mode)
+	   ("\\.tpl\\.php\\'" . web-mode)
+	   ("\\.blade\\.php\\'" . web-mode)
+	   ("\\.jsp\\'" . web-mode)
+	   ("\\.as[cp]x\\'" . web-mode)
+	   ("\\.erb\\'" . web-mode)
+	   ("\\.html?\\'" . web-mode)
+	   ("\\.ejs\\'" . web-mode)
+	   ("\\.php\\'" . web-mode)
+	   ("\\.mustache\\'" . web-mode)
+	   ("/\\(views\\|html\\|theme\\|templates\\)/.*\\.php\\'" . web-mode))
+    :init  
+    (setq web-mode-markup-indent-offset 2)
+    (setq web-mode-attr-indent-offset 2)
+    (setq web-mode-attr-value-indent-offset 2)
+    (setq web-mode-code-indent-offset 2)
+    (setq web-mode-css-indent-offset 2)
+    (setq web-mode-code-indent-offset 2)
+    (setq web-mode-enable-auto-closing t)
+    (setq web-mode-enable-auto-pairing t)
+    (setq web-mode-enable-comment-keywords t)
+    (setq web-mode-enable-current-element-highlight t))
+
+  (use-package company-web
+    :ensure t
+    :hook (web-mode . (lambda ()
+			(add-to-list 'company-backends 'company-web-html)
+			(add-to-list 'company-backends 'company-web-jade)
+			(add-to-list 'company-backends 'company-web-slim))))
+
+  (use-package emmet-mode
+    :ensure t
+    :hook (web-mode sgml-mode html-mode css-mode))
+
+  (use-package rainbow-mode
+    :ensure t
+    :pin gnu
+    :hook css-mode)
+#+END_SRC
+
+***** Python
+#+BEGIN_SRC emacs-lisp
+  (use-package python-mode
+    :ensure t)
+
+  (use-package company-jedi
+    :ensure t
+    :init
+    (add-hook 'python-mode-hook (add-to-list 'company-backends 'company-jedi)))
+#+END_SRC
+
+***** Markdown
+#+BEGIN_SRC emacs-lisp
+  (use-package markdown-mode
+    :ensure t
+    :commands (markdown-mode gfm-mode)
+    :mode (("README\\.md\\'" . gfm-mode)
+	   ("\\.md\\'" . markdown-mode)
+	   ("\\.markdown\\'" . markdown-mode))
+    :init
+    (setq markdown-command "multimarkdown")
+    (setq markdown-header-scaling t))
+#+END_SRC
+
+***** Scheme
+#+BEGIN_SRC emacs-lisp
+  (use-package geiser
+    :ensure t)
+#+END_SRC
+
+***** Lua
+#+BEGIN_SRC emacs-lisp
+  (use-package lua-mode
+    :ensure t
+    :mode ("\\.lua\\'" . lua-mode))
+
+  (use-package company-lua
+    :ensure t
+    :init
+    (add-hook 'lua-mode-hook (lambda ()
+			       (add-to-list 'company-backends 'company-lua))))
+#+END_SRC
+
+***** Fountain
+#+BEGIN_SRC emacs-lisp
+  (use-package fountain-mode
+    :ensure t)
+#+END_SRC
+
+     
+

@@ -1,0 +1,17 @@
+elpa
+eshell
+projectile-bookmarks.eld
+projectile.cache
+recentf
+request
+smex-items
+url
+.DS_Store
+.mc-lists.el
+.org-id-locations
+.saves
+auto-save-list
+bookmarks
+games
+backups
+emacs.el

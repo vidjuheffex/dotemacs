@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: export default react component
+# key: edrc
+# --
+export default class ${1:MyComponent} extends Component {
+$0
+}

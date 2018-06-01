@@ -1,6 +1,7 @@
 #+TITLE: Emacs Configuration
 #+AUTHOR: Julian Herrera
 #+PROPERTY: header-args :tangle yes
+#+STARTUP: indent
 
 * Table Of Contents :TOC_5_gh:
 - [[#configuration][Configuration]]

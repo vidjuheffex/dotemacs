@@ -46,6 +46,8 @@
    (unless (package-installed-p 'use-package)
      (package-refresh-contents)
      (package-install 'use-package))
+   (setq use-package-ensure-all t)
+   (require 'use-package)
  #+END_SRC 
 
 ** Editor Configuration :noexport_1:
@@ -138,6 +140,8 @@ Set titlebar style
 #+BEGIN_SRC emacs-lisp
   (setq inhibit-startup-screen t)
   (setq ring-bell-function 'ignore)
+  (setq-default indent-tabs-mode-nil)
+  (setq-default tab-width 2)
 #+END_SRC
 
 *** Set a custom font
@@ -219,132 +223,149 @@ Set titlebar style
 
 *** General
 #+BEGIN_SRC emacs-lisp
-  (use-package leuven-theme
-    :ensure t
+	(use-package leuven-theme
+		:ensure t
+		:config
+		(load-theme 'leuven 'no-confirm))
+
+	(use-package golden-ratio-scroll-screen
+		:ensure t
+		:bind(([remap scroll-down-command] . golden-ratio-scroll-screen-down)
+		([remap scroll-up-command] . golden-ratio-scroll-screen-up)))
+
+	(use-package undo-tree
+		:ensure t
+		:diminish undo-tree-mode
+		:demand
+		:config
+		(global-undo-tree-mode)
+		:bind(("C-z" . undo-tree-undo)
+		("C-M-z" . undo-tree-redo)))
+
+	(use-package dired-subtree
+		:ensure t)
+
+	(use-package dired-sidebar
+		:ensure t)
+
+	(use-package ibuffer
+		:bind( "C-x C-b" . ibuffer))
+
+	(use-package ibuffer-sidebar
+		:after (ibuffer)
+		:ensure t)
+
+	(use-package editorconfig
+		:ensure t
+		:config
+		(editorconfig-mode 1))
+
+	(use-package wgrep
+		:ensure t)
+
+	(use-package smex
+		:ensure t)
+
+	(use-package dedicated
+		:ensure t)
+
+	(use-package ace-window
+		:ensure t
+		:bind([remap other-window] . ace-window)
+		:init
+		(setq aw-dispatch-always t)
     :config
-    (load-theme 'leuven 'no-confirm))
+		(custom-set-faces
+		 '(aw-leading-char-face
+			 ((t (:inherit ace-jump-face-foreground :height 3.0))))))
 
-  (use-package golden-ratio-scroll-screen
-    :ensure t
-    :bind(([remap scroll-down-command] . golden-ratio-scroll-screen-down)
-	  ([remap scroll-up-command] . golden-ratio-scroll-screen-up)))
+	(use-package multiple-cursors
+		:ensure t
+		:bind(("C-c /" . mc/edit-lines)
+		("C->" . mc/mark-next-like-this)
+		("C-<" . mc/mark-previous-like-this)
+		("C-c C-<" . mc/mark-all-like-this)))
 
-  (use-package undo-tree
-    :ensure t
-    :diminish undo-tree-mode
-    :demand
-    :config
-    (global-undo-tree-mode)
-    :bind(("C-z" . undo-tree-undo)
-	  ("C-M-z" . undo-tree-redo)))
+	(use-package switch-buffer-functions
+		:ensure t
+		:init
+		(add-hook 'switch-buffer-functions (lambda (prev cur) (interactive)(save-some-buffers t))))
 
-  (use-package dired-subtree
-    :ensure t)
+	(use-package flycheck
+		:ensure t
+		:defer 1
+		:diminish (flycheck-mode . "Fly")
+		:hook 
+		(after-init . global-flycheck-mode))
 
-  (use-package dired-sidebar
-    :ensure t)
+	(use-package adaptive-wrap
+		:ensure t)
 
-  (use-package ibuffer
-    :bind( "C-x C-b" . ibuffer))
+	(use-package yasnippet
+		:ensure t
+		:diminish yas-minor-mode
+		:hook
+		(prog-mode . yas-minor-mode)
+		:config
+		(yas-reload-all))
 
-  (use-package ibuffer-sidebar
-    :after (ibuffer)
-    :ensure t)
+	(use-package duplicate-thing
+		:ensure t
+		:bind(("C-c C-d" . duplicate-thing)))
 
-  (use-package editorconfig
-    :ensure t
-    :config
-    (editorconfig-mode 1))
+	(use-package exec-path-from-shell
+		:if (memq window-system '(mac ns x))
+		:ensure t
+		:config
+		(exec-path-from-shell-initialize))
 
-  (use-package wgrep
-    :ensure t)
+	(use-package visual-regexp
+		:ensure t)
 
-  (use-package smex
-    :ensure t)
+	(use-package smartparens
+		:ensure t
+		:init
+		(require 'smartparens-config)
+		:hook (prog-mode . smartparens-strict-mode))
 
-  (use-package dedicated
-    :ensure t)
+	(use-package projectile
+		:ensure t
+		:demand
+		:init
+		(setq projectile-switch-project-action 'projectile-vc)
+		(setq projectile-mode-line
+		'(:eval
+			(format " Pr[%s]"
+				(projectile-project-name))))
+		:config
+		(projectile-mode))
 
-  (use-package ace-window
-    :ensure t
-    :bind("M-`" . ace-window)
-    :init
-    (setq aw-dispatch-always t))
+	(use-package expand-region
+		:ensure t
+		:bind(("C-=" . er/expand-region)
+					("C--" . er/contract-region)))
 
-  (use-package multiple-cursors
-    :ensure t
-    :bind(("C-c /" . mc/edit-lines)
-	  ("C->" . mc/mark-next-like-this)
-	  ("C-<" . mc/mark-previous-like-this)
-	  ("C-c C-<" . mc/mark-all-like-this)))
+	(use-package diminish
+		:ensure t
+		:config
+		(diminish 'auto-revert-mode))
 
-`  (use-package switch-buffer-functions
-    :ensure t
-    :init
-    (add-hook 'switch-buffer-functions (lambda (prev cur) (interactive)(save-some-buffers t))))
+	(use-package rainbow-delimiters
+		:ensure t
+		:init
+		(add-hook 'prog-mode-hook 'rainbow-delimiters-mode-enable))
 
-  (use-package flycheck
-    :ensure t
-    :defer 1
-    :diminish (flycheck-mode . "Fly")
-    :hook 
-    (after-init . global-flycheck-mode))
+	(use-package graphql-mode
+		:ensure t)
 
-  (use-package adaptive-wrap
-    :ensure t)
+	(use-package restclient
+		:ensure t
+		:mode ("\\.rest\\'" . restclient-mode))
 
-  (use-package yasnippet
-    :ensure t
-    :diminish yas-minor-mode
-    :hook
-    (prog-mode . yas-minor-mode)
-    :config
-    (yas-reload-all))
-
-  (use-package duplicate-thing
-    :ensure t
-    :bind(("C-c C-d" . duplicate-thing)))
-
-  (use-package exec-path-from-shell
-    :if (memq window-system '(mac ns x))
-    :ensure t
-    :config
-    (exec-path-from-shell-initialize))
-
-  (use-package visual-regexp
-    :ensure t)
-
-  (use-package smartparens
-    :ensure t
-    :init
-    (require 'smartparens-config)
-    :hook (prog-mode . smartparens-strict-mode))
-
-  (use-package projectile
-    :ensure t
-    :demand
-    :init
-    (setq projectile-switch-project-action 'projectile-vc)
-    (setq projectile-mode-line
-	  '(:eval
-	    (format " Pr[%s]"
-		    (projectile-project-name))))
-    :config
-    (projectile-mode))
-
-  (use-package expand-region
-    :ensure t
-    :bind("C-=" . er/expand-region))
-
-  (use-package diminish
-    :ensure t
-    :config
-    (diminish 'auto-revert-mode))
-
-  (use-package rainbow-delimiters
-    :ensure t
-    :init
-    (add-hook 'prog-mode-hook 'rainbow-delimiters-mode-enable))
+	(use-package company-restclient
+		:ensure t
+		:hook (restclient-mode . (lambda ()
+						 (add-to-list 'company-backends 'company-restclient))))
 
 #+END_SRC
 
@@ -411,6 +432,8 @@ Set titlebar style
 
   (use-package helm-dash
     :ensure t
+    :init
+    (setq helm-dash-browser-func 'eww)
     :after (helm))
 #+END_SRC
 
@@ -466,6 +489,7 @@ Set titlebar style
     (setq org-src-fontify-natively t)
     (setq org-src-tab-acts-natively t)
     (setq org-confirm-babel-evaluate nil)
+    (setq org-src-window-setup 'current-window)
     (setq org-agenda-files (list "~/Dropbox/org/notes.org"
 				 "~/Dropbox/org/personal.org"))
     :bind

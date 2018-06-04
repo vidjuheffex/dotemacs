@@ -1,11 +1,12 @@
 #+TITLE: Emacs Configuration
 #+AUTHOR: Julian Herrera
 #+PROPERTY: header-args :tangle yes
-#+STARTUP: indent
 
 * Table Of Contents :TOC_5_gh:
 - [[#configuration][Configuration]]
   - [[#package-management][Package Management]]
+    - [[#sources][Sources]]
+    - [[#use-package][Use-Package]]
   - [[#editor-configuration][Editor Configuration]]
   - [[#package-configuration][Package Configuration]]
     - [[#general][General]]
@@ -25,9 +26,9 @@
 
 * Configuration
 
-** Package Management :noexport_1:
-
-*** First we're going to add [[melpa.org][melpa]] as a source for packages
+** Package Management
+*** Sources :noexport_1:
+**** First we're going to add [[melpa.org][melpa]] as a source for packages
  #+BEGIN_SRC emacs-lisp
    (require 'package)
    (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
@@ -41,8 +42,8 @@
        (add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))))
    (package-initialize)
  #+END_SRC
-
-*** Then we make sure [[https://github.com/jwiegley/use-package][use-package]] is available, if it's not we install it.
+*** Use-Package :noexport_1:
+**** Then we make sure [[https://github.com/jwiegley/use-package][use-package]] is available, if it's not we install it.
  #+BEGIN_SRC emacs-lisp
    (unless (package-installed-p 'use-package)
      (package-refresh-contents)
@@ -498,8 +499,10 @@ Set titlebar style
     (setq org-src-tab-acts-natively t)
     (setq org-confirm-babel-evaluate nil)
     (setq org-src-window-setup 'current-window)
+    (setq org-startup-indented t)
+    (setq org-startup-folded nil)
     (setq org-agenda-files (list "~/Dropbox/org/notes.org"
-				 "~/Dropbox/org/personal.org"))
+         "~/Dropbox/org/personal.org"))
     :bind
     (("C-c l" . 'org-store-link)
      ("C-c a" . 'org-agenda))
@@ -711,3 +714,4 @@ Set titlebar style
   (use-package fountain-mode
     :ensure t)
 #+END_SRC
+

@@ -246,6 +246,9 @@ Set titlebar style
 	(use-package dired-subtree
 		:ensure t)
 
+	(use-package hydra
+		:ensure t)
+
 	(use-package dired-sidebar
 		:ensure t)
 
@@ -282,10 +285,24 @@ Set titlebar style
 
 	(use-package multiple-cursors
 		:ensure t
-		:bind(("C-c /" . mc/edit-lines)
-					("C->" . mc/mark-next-like-this)
-					("C-<" . mc/mark-previous-like-this)
-					("C-c C-<" . mc/mark-all-like-this)))
+		:bind("C-c m" . hydra-multiple-cursors/body))
+
+	(defhydra hydra-multiple-cursors (:hint nil)
+		"
+			 ^Up^            ^Down^        ^Miscellaneous^
+	----------------------------------------------
+	[_p_]   Next    [_n_]   Next    [_l_] Edit lines
+	[_P_]   Skip    [_N_]   Skip    [_a_] Mark all
+	[_M-p_] Unmark  [_M-n_] Unmark  [_q_] Quit"
+		("l" mc/edit-lines :exit t)
+		("a" mc/mark-all-like-this :exit t)
+		("n" mc/mark-next-like-this)
+		("N" mc/skip-to-next-like-this)
+		("M-n" mc/unmark-next-like-this)
+		("p" mc/mark-previous-like-this)
+		("P" mc/skip-to-previous-like-this)
+		("M-p" mc/unmark-previous-like-this)
+		("q" nil))
 
 	(use-package switch-buffer-functions
 		:ensure t
@@ -296,7 +313,7 @@ Set titlebar style
 		:ensure t
 		:defer 1
 		:diminish (flycheck-mode . "Fly")
-		:hook 
+		:hook
 		(after-init . global-flycheck-mode))
 
 	(use-package adaptive-wrap
@@ -327,7 +344,8 @@ Set titlebar style
 		:ensure t
 		:init
 		(require 'smartparens-config)
-		:hook (prog-mode . smartparens-strict-mode))
+		:bind
+		:hook (prog-mode . smartparens-mode))
 
 	(use-package projectile
 		:ensure t
@@ -370,8 +388,8 @@ Set titlebar style
 
 	(use-package olivetti
 		:ensure t
-		:config
-		(olivetti-set-width 80))
+		:init
+		(setq olivetti-body-width 80))
 #+END_SRC
 
 **** Helm

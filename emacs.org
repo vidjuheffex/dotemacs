@@ -32,8 +32,8 @@
  #+BEGIN_SRC emacs-lisp
    (require 'package)
    (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
-		       (not (gnutls-available-p))))
-	  (proto (if no-ssl "http" "https")))
+           (not (gnutls-available-p))))
+    (proto (if no-ssl "http" "https")))
      ;; Comment/uncomment these two lines to enable/disable MELPA and MELPA Stable as desired
      (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
      ;;(add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
@@ -88,10 +88,10 @@
   (setq recentf-max-saved-items 200)
   (setq recentf-max-menu-items 50)
   (setq recentf-exclude '("^/var/folders\\.*"
-			  "COMMIT_EDITMSG\\'"
-			  ".*-autoloads\\.el\\'"
-			  "[/\\]\\.elpa/"
-			  ))
+        "COMMIT_EDITMSG\\'"
+        ".*-autoloads\\.el\\'"
+        "[/\\]\\.elpa/"
+        ))
 #+END_SRC
 
 *** Customize titlebar
@@ -191,8 +191,8 @@ Set titlebar style
   (defun back-to-indentation-or-beginning ()
     "Replace jump-to-beginning with jump-to-indentation."
     (interactive)
-	 (if (= (point) (progn (back-to-indentation) (point)))
-	     (beginning-of-line)))
+   (if (= (point) (progn (back-to-indentation) (point)))
+       (beginning-of-line)))
 
   (global-set-key (kbd "C-a") 'back-to-indentation-or-beginning)
 #+END_SRC
@@ -203,14 +203,14 @@ Set titlebar style
     "Kill all dired buffers."
     (interactive)
     (mapc (lambda (buffer)
-	    (when (eq 'dired-mode (buffer-local-value 'major-mode buffer)) 
-	      (kill-buffer buffer))) 
-	  (buffer-list)))
+      (when (eq 'dired-mode (buffer-local-value 'major-mode buffer)) 
+        (kill-buffer buffer))) 
+    (buffer-list)))
 
    (defun kill-other-buffers ()
-	"Kill all other buffers."
-	(interactive)
-	(mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
+  "Kill all other buffers."
+  (interactive)
+  (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
 #+END_SRC
 
 *** Mac-specific key-binding changes
@@ -224,172 +224,172 @@ Set titlebar style
 ** Package Configuration
 *** General
 #+BEGIN_SRC emacs-lisp
-	(use-package leuven-theme
-		:ensure t
-		:config
-		(load-theme 'leuven 'no-confirm))
+  (use-package leuven-theme
+    :ensure t
+    :config
+    (load-theme 'leuven 'no-confirm))
 
-	(use-package golden-ratio-scroll-screen
-		:ensure t
-		:bind(([remap scroll-down-command] . golden-ratio-scroll-screen-down)
-					([remap scroll-up-command] . golden-ratio-scroll-screen-up)))
+  (use-package golden-ratio-scroll-screen
+    :ensure t
+    :bind(([remap scroll-down-command] . golden-ratio-scroll-screen-down)
+          ([remap scroll-up-command] . golden-ratio-scroll-screen-up)))
 
-	(use-package undo-tree
-		:ensure t
-		:diminish undo-tree-mode
-		:demand
-		:config
-		(global-undo-tree-mode)
-		:bind(("C-z" . undo-tree-undo)
-					("C-M-z" . undo-tree-redo)))
+  (use-package undo-tree
+    :ensure t
+    :diminish undo-tree-mode
+    :demand
+    :config
+    (global-undo-tree-mode)
+    :bind(("C-z" . undo-tree-undo)
+          ("C-M-z" . undo-tree-redo)))
 
-	(use-package dired-subtree
-		:ensure t)
+  (use-package dired-subtree
+    :ensure t)
 
-	(use-package hydra
-		:ensure t)
+  (use-package hydra
+    :ensure t)
 
-	(use-package dired-sidebar
-		:ensure t)
+  (use-package dired-sidebar
+    :ensure t)
 
-	(use-package ibuffer
-		:bind( "C-x C-b" . ibuffer))
+  (use-package ibuffer
+    :bind( "C-x C-b" . ibuffer))
 
-	(use-package ibuffer-sidebar
-		:after (ibuffer)
-		:ensure t)
+  (use-package ibuffer-sidebar
+    :after (ibuffer)
+    :ensure t)
 
-	(use-package editorconfig
-		:ensure t
-		:config
-		(editorconfig-mode 1))
+  (use-package editorconfig
+    :ensure t
+    :config
+    (editorconfig-mode 1))
 
-	(use-package wgrep
-		:ensure t)
+  (use-package wgrep
+    :ensure t)
 
-	(use-package smex
-		:ensure t)
+  (use-package smex
+    :ensure t)
 
-	(use-package dedicated
-		:ensure t)
+  (use-package dedicated
+    :ensure t)
 
-	(use-package ace-window
-		:ensure t
-		:bind([remap other-window] . ace-window)
-		:init
-		(setq aw-dispatch-always t)
-		:config
-		(custom-set-faces
-		 '(aw-leading-char-face
-			 ((t (:inherit ace-jump-face-foreground :height 3.0))))))
+  (use-package ace-window
+    :ensure t
+    :bind([remap other-window] . ace-window)
+    :init
+    (setq aw-dispatch-always t)
+    :config
+    (custom-set-faces
+     '(aw-leading-char-face
+       ((t (:inherit ace-jump-face-foreground :height 3.0))))))
 
-	(use-package multiple-cursors
-		:ensure t
-		:bind("C-c m" . hydra-multiple-cursors/body))
+  (use-package multiple-cursors
+    :ensure t
+    :bind("C-c m" . hydra-multiple-cursors/body))
 
-	(defhydra hydra-multiple-cursors (:hint nil)
-		"
-			 ^Up^            ^Down^        ^Miscellaneous^
-	----------------------------------------------
-	[_p_]   Next    [_n_]   Next    [_l_] Edit lines
-	[_P_]   Skip    [_N_]   Skip    [_a_] Mark all
-	[_M-p_] Unmark  [_M-n_] Unmark  [_q_] Quit"
-		("l" mc/edit-lines :exit t)
-		("a" mc/mark-all-like-this :exit t)
-		("n" mc/mark-next-like-this)
-		("N" mc/skip-to-next-like-this)
-		("M-n" mc/unmark-next-like-this)
-		("p" mc/mark-previous-like-this)
-		("P" mc/skip-to-previous-like-this)
-		("M-p" mc/unmark-previous-like-this)
-		("q" nil))
+  (defhydra hydra-multiple-cursors (:hint nil)
+    "
+       ^Up^            ^Down^        ^Miscellaneous^
+  ----------------------------------------------
+  [_p_]   Next    [_n_]   Next    [_l_] Edit lines
+  [_P_]   Skip    [_N_]   Skip    [_a_] Mark all
+  [_M-p_] Unmark  [_M-n_] Unmark  [_q_] Quit"
+    ("l" mc/edit-lines :exit t)
+    ("a" mc/mark-all-like-this :exit t)
+    ("n" mc/mark-next-like-this)
+    ("N" mc/skip-to-next-like-this)
+    ("M-n" mc/unmark-next-like-this)
+    ("p" mc/mark-previous-like-this)
+    ("P" mc/skip-to-previous-like-this)
+    ("M-p" mc/unmark-previous-like-this)
+    ("q" nil))
 
-	(use-package switch-buffer-functions
-		:ensure t
-		:init
-		(add-hook 'switch-buffer-functions (lambda (prev cur) (interactive)(save-some-buffers t))))
+  (use-package switch-buffer-functions
+    :ensure t
+    :init
+    (add-hook 'switch-buffer-functions (lambda (prev cur) (interactive)(save-some-buffers t))))
 
-	(use-package flycheck
-		:ensure t
-		:defer 1
-		:diminish (flycheck-mode . "Fly")
-		:hook
-		(after-init . global-flycheck-mode))
+  (use-package flycheck
+    :ensure t
+    :defer 1
+    :diminish (flycheck-mode . "Fly")
+    :hook
+    (after-init . global-flycheck-mode))
 
-	(use-package adaptive-wrap
-		:ensure t)
+  (use-package adaptive-wrap
+    :ensure t)
 
-	(use-package yasnippet
-		:ensure t
-		:diminish yas-minor-mode
-		:hook
-		(prog-mode . yas-minor-mode)
-		:config
-		(yas-reload-all))
+  (use-package yasnippet
+    :ensure t
+    :diminish yas-minor-mode
+    :hook
+    (prog-mode . yas-minor-mode)
+    :config
+    (yas-reload-all))
 
-	(use-package duplicate-thing
-		:ensure t
-		:bind(("C-c C-d" . duplicate-thing)))
+  (use-package duplicate-thing
+    :ensure t
+    :bind(("C-c C-d" . duplicate-thing)))
 
-	(use-package exec-path-from-shell
-		:if (memq window-system '(mac ns x))
-		:ensure t
-		:config
-		(exec-path-from-shell-initialize))
+  (use-package exec-path-from-shell
+    :if (memq window-system '(mac ns x))
+    :ensure t
+    :config
+    (exec-path-from-shell-initialize))
 
-	(use-package visual-regexp
-		:ensure t)
+  (use-package visual-regexp
+    :ensure t)
 
-	(use-package smartparens
-		:ensure t
-		:init
-		(require 'smartparens-config)
-		:bind
-		:hook (prog-mode . smartparens-mode))
+  (use-package smartparens
+    :ensure t
+    :init
+    (require 'smartparens-config)
+    :bind
+    :hook (prog-mode . smartparens-mode))
 
-	(use-package projectile
-		:ensure t
-		:demand
-		:init
-		(setq projectile-switch-project-action 'projectile-vc)
-		(setq projectile-mode-line
-					'(:eval
-						(format " Pr[%s]"
-										(projectile-project-name))))
-		:config
-		(projectile-mode))
+  (use-package projectile
+    :ensure t
+    :demand
+    :init
+    (setq projectile-switch-project-action 'projectile-vc)
+    (setq projectile-mode-line
+          '(:eval
+            (format " Pr[%s]"
+                    (projectile-project-name))))
+    :config
+    (projectile-mode))
 
-	(use-package expand-region
-		:ensure t
-		:bind(("C-=" . er/expand-region)
-					("C--" . er/contract-region)))
+  (use-package expand-region
+    :ensure t
+    :bind(("C-=" . er/expand-region)
+          ("C--" . er/contract-region)))
 
-	(use-package diminish
-		:ensure t
-		:config
-		(diminish 'auto-revert-mode))
+  (use-package diminish
+    :ensure t
+    :config
+    (diminish 'auto-revert-mode))
 
-	(use-package rainbow-delimiters
-		:ensure t
-		:init
-		(add-hook 'prog-mode-hook 'rainbow-delimiters-mode-enable))
+  (use-package rainbow-delimiters
+    :ensure t
+    :init
+    (add-hook 'prog-mode-hook 'rainbow-delimiters-mode-enable))
 
-	(use-package graphql-mode
-		:ensure t)
+  (use-package graphql-mode
+    :ensure t)
 
-	(use-package restclient
-		:ensure t
-		:mode ("\\.rest\\'" . restclient-mode))
+  (use-package restclient
+    :ensure t
+    :mode ("\\.rest\\'" . restclient-mode))
 
-	(use-package company-restclient
-		:ensure t
-		:hook (restclient-mode . (lambda ()
-															 (add-to-list 'company-backends 'company-restclient))))
+  (use-package company-restclient
+    :ensure t
+    :hook (restclient-mode . (lambda ()
+                               (add-to-list 'company-backends 'company-restclient))))
 
-	(use-package olivetti
-		:ensure t
-		:init
-		(setq olivetti-body-width 80))
+  (use-package olivetti
+    :ensure t
+    :init
+    (setq olivetti-body-width 80))
 #+END_SRC
 
 **** Helm
@@ -405,12 +405,12 @@ Set titlebar style
     (setq helm-follow-mode-persistent t)
     (setq helm-split-window-inside-p t)
     :bind(("C-x f" . helm-recentf)
-	  ("C-x b" . helm-mini)
-	  ("C-c s" . helm-occur)
-	  ("C-c S" . helm-moccur)
-	  ("C-x C-b" . helm-buffers-list)
-	  ("C-x C-f" . helm-find-files)
-	  ("C-x C-r" . helm-resume))
+    ("C-x b" . helm-mini)
+    ("C-c s" . helm-occur)
+    ("C-c S" . helm-moccur)
+    ("C-x C-b" . helm-buffers-list)
+    ("C-x C-f" . helm-find-files)
+    ("C-x C-r" . helm-resume))
     :config
     (helm-mode 1))
 
@@ -429,7 +429,7 @@ Set titlebar style
     :init
     (setq helm-smex-show-bindings t)
     :bind(([remap execute-extended-command] . helm-smex)
-	  ("M-X" . helm-smex-major-mode-commands)))
+    ("M-X" . helm-smex-major-mode-commands)))
 
   (use-package helm-projectile
     :ensure t
@@ -470,24 +470,24 @@ Set titlebar style
     :config
     ;; Protect against accident pushes to upstream
     (defadvice magit-push-current-to-upstream
-	(around my-protect-accidental-magit-push-current-to-upstream)
+  (around my-protect-accidental-magit-push-current-to-upstream)
       "Protect against accidental push to upstream.
 
       Causes `magit-git-push' to ask the user for confirmation first."
       (let ((my-magit-ask-before-push t))
-	ad-do-it))
+  ad-do-it))
 
     (defadvice magit-git-push (around my-protect-accidental-magit-git-push)
       "Maybe ask the user for confirmation before pushing.
 
       Advice to `magit-push-current-to-upstream' triggers this query."
       (if (bound-and-true-p my-magit-ask-before-push)
-	  ;; Arglist is (BRANCH TARGET ARGS)
-	  (if (yes-or-no-p (format "Push %s branch upstream to %s? "
-				   (ad-get-arg 0) (ad-get-arg 1)))
-	      ad-do-it
-	    (error "Push to upstream aborted by user"))
-	ad-do-it))
+    ;; Arglist is (BRANCH TARGET ARGS)
+    (if (yes-or-no-p (format "Push %s branch upstream to %s? "
+           (ad-get-arg 0) (ad-get-arg 1)))
+        ad-do-it
+      (error "Push to upstream aborted by user"))
+  ad-do-it))
 
     (ad-activate 'magit-push-current-to-upstream)
     (ad-activate 'magit-git-push))
@@ -581,18 +581,18 @@ Set titlebar style
   (use-package rjsx-mode
     :ensure t
     :mode(("\\.js\\'" . rjsx-mode)
-	  ("\\.jsx\\'" . rjsx-mode)))
+    ("\\.jsx\\'" . rjsx-mode)))
 
   (defadvice js-jsx-indent-line (after js-jsx-indent-line-after-hack activate)
     "Workaround 'sgml-mode' and follow airbnb component style."
     (save-match-data
       (save-excursion
-	(goto-char (line-beginning-position))
-	(when (looking-at "^\\( +\\)\/?> *$")
-	  (let ((empty-spaces (match-string 1)))
-	    (while (search-forward empty-spaces (line-end-position) t)
-	      (replace-match (make-string (- (length empty-spaces) sgml-basic-offset)
-					  32))))))))
+  (goto-char (line-beginning-position))
+  (when (looking-at "^\\( +\\)\/?> *$")
+    (let ((empty-spaces (match-string 1)))
+      (while (search-forward empty-spaces (line-end-position) t)
+        (replace-match (make-string (- (length empty-spaces) sgml-basic-offset)
+            32))))))))
 
   (use-package js2-refactor
     :ensure t
@@ -632,8 +632,8 @@ Set titlebar style
   (use-package json-mode
     :ensure t
     :mode (("\\.json\\'" . json-mode)
-	   ("\\manifest.webapp\\'" . json-mode )
-	   ("\\.tern-project\\'" . json-mode)))
+     ("\\manifest.webapp\\'" . json-mode )
+     ("\\.tern-project\\'" . json-mode)))
 #+END_SRC
 
 **** Web
@@ -641,16 +641,16 @@ Set titlebar style
   (use-package web-mode
     :ensure t
     :mode (("\\.phtml\\'" . web-mode)
-	   ("\\.tpl\\.php\\'" . web-mode)
-	   ("\\.blade\\.php\\'" . web-mode)
-	   ("\\.jsp\\'" . web-mode)
-	   ("\\.as[cp]x\\'" . web-mode)
-	   ("\\.erb\\'" . web-mode)
-	   ("\\.html?\\'" . web-mode)
-	   ("\\.ejs\\'" . web-mode)
-	   ("\\.php\\'" . web-mode)
-	   ("\\.mustache\\'" . web-mode)
-	   ("/\\(views\\|html\\|theme\\|templates\\)/.*\\.php\\'" . web-mode))
+     ("\\.tpl\\.php\\'" . web-mode)
+     ("\\.blade\\.php\\'" . web-mode)
+     ("\\.jsp\\'" . web-mode)
+     ("\\.as[cp]x\\'" . web-mode)
+     ("\\.erb\\'" . web-mode)
+     ("\\.html?\\'" . web-mode)
+     ("\\.ejs\\'" . web-mode)
+     ("\\.php\\'" . web-mode)
+     ("\\.mustache\\'" . web-mode)
+     ("/\\(views\\|html\\|theme\\|templates\\)/.*\\.php\\'" . web-mode))
     :init  
     (setq web-mode-markup-indent-offset 2)
     (setq web-mode-attr-indent-offset 2)
@@ -666,9 +666,9 @@ Set titlebar style
   (use-package company-web
     :ensure t
     :hook (web-mode . (lambda ()
-			(add-to-list 'company-backends 'company-web-html)
-			(add-to-list 'company-backends 'company-web-jade)
-			(add-to-list 'company-backends 'company-web-slim))))
+      (add-to-list 'company-backends 'company-web-html)
+      (add-to-list 'company-backends 'company-web-jade)
+      (add-to-list 'company-backends 'company-web-slim))))
 
   (use-package emmet-mode
     :ensure t
@@ -697,8 +697,8 @@ Set titlebar style
     :ensure t
     :commands (markdown-mode gfm-mode)
     :mode (("README\\.md\\'" . gfm-mode)
-	   ("\\.md\\'" . markdown-mode)
-	   ("\\.markdown\\'" . markdown-mode))
+     ("\\.md\\'" . markdown-mode)
+     ("\\.markdown\\'" . markdown-mode))
     :init
     (setq markdown-command "multimarkdown")
     (setq markdown-header-scaling t))
@@ -720,7 +720,7 @@ Set titlebar style
     :ensure t
     :init
     (add-hook 'lua-mode-hook (lambda ()
-			       (add-to-list 'company-backends 'company-lua))))
+             (add-to-list 'company-backends 'company-lua))))
 #+END_SRC
 
 **** Fountain

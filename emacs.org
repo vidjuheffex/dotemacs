@@ -142,7 +142,7 @@ Set titlebar style
 #+BEGIN_SRC emacs-lisp
   (setq inhibit-startup-screen t)
   (setq ring-bell-function 'ignore)
-  (setq-default indent-tabs-mode-nil)
+  (setq-default indent-tabs-mode nil)
   (setq-default tab-width 2)
 #+END_SRC
 

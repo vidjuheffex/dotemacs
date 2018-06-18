@@ -148,7 +148,7 @@ Set titlebar style
 
 *** Set a custom font
 #+BEGIN_SRC emacs-lisp
-  (add-to-list 'default-frame-alist '(font . "Monofur 12"))
+  (add-to-list 'default-frame-alist '(font . "Monofur 16"))
 #+END_SRC
 
 *** Override a couple of default keybindings
@@ -565,6 +565,8 @@ Set titlebar style
 
 **** Javascript
 #+BEGIN_SRC emacs-lisp
+  (setq js-switch-indent-offset 2)
+
   (use-package eslint-fix
     :ensure t)
 
@@ -623,6 +625,11 @@ Set titlebar style
     :ensure t
     :diminish (indium-interaction-mode . "In" )
     :hook (js2-mode . indium-interaction-mode))
+
+  (use-package prettier-js
+     :ensure t
+     :after add-node-modules-path
+     :hook (js2-mode . prettier-js-mode))
 #+END_SRC
 
 **** JSON

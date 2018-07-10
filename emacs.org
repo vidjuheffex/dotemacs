@@ -526,6 +526,8 @@ Set titlebar style
     (org-babel-do-load-languages
      'org-babel-load-languages
      '((restclient . t)
+       (shell . t)
+       (scheme . t)
        (js . t))))
 
   (use-package ob-restclient
@@ -714,7 +716,8 @@ Set titlebar style
 **** Scheme
 #+BEGIN_SRC emacs-lisp
   (use-package geiser
-    :ensure t)
+    ;; :ensure t
+    :load-path "./git-packages/geiser/elisp")
 #+END_SRC
 
 **** Lua

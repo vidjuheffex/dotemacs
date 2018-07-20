@@ -13,6 +13,7 @@
       - [[#helm][Helm]]
       - [[#git][Git]]
       - [[#org][Org]]
+      - [[#gnuplot][Gnuplot]]
       - [[#company][Company]]
     - [[#languages][Languages]]
       - [[#javascript][Javascript]]
@@ -526,6 +527,7 @@ Set titlebar style
     (org-babel-do-load-languages
      'org-babel-load-languages
      '((restclient . t)
+       (browser . t)
        (shell . t)
        (scheme . t)
        (js . t))))
@@ -533,10 +535,22 @@ Set titlebar style
   (use-package ob-restclient
     :ensure t)
 
+  (use-package ob-browser
+    :ensure t)
+
   (use-package toc-org
     :ensure t
     :after org
     :hook (org-mode . toc-org-enable))
+#+END_SRC
+
+**** Gnuplot
+#+BEGIN_SRC emacs-lisp
+  (use-package gnuplot
+    :ensure t)
+
+  (use-package gnuplot-mode
+    :ensure t)
 #+END_SRC
 
 **** Company
@@ -738,4 +752,3 @@ Set titlebar style
   (use-package fountain-mode
     :ensure t)
 #+END_SRC
-

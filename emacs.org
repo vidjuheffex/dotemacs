@@ -274,6 +274,9 @@ Set titlebar style
   (use-package dedicated
     :ensure t)
 
+  (use-package htmlize
+    :ensure t)
+
   (use-package ace-window
     :ensure t
     :bind([remap other-window] . ace-window)
@@ -518,6 +521,8 @@ Set titlebar style
     (setq org-startup-folded nil)
     (setq org-agenda-files (list "~/Dropbox/org/notes.org"
          "~/Dropbox/org/personal.org"))
+    (setq org-plantuml-jar-path
+      (expand-file-name "~/plantuml.jar"))
     :bind
     (("C-c l" . 'org-store-link)
      ("C-c a" . 'org-agenda))
@@ -530,6 +535,8 @@ Set titlebar style
        (browser . t)
        (shell . t)
        (scheme . t)
+       (gnuplot . t)
+       (plantuml . t)
        (js . t))))
 
   (use-package ob-restclient

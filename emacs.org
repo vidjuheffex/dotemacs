@@ -250,6 +250,12 @@ Set titlebar style
   (use-package hydra
     :ensure t)
 
+  (use-package nyan-mode
+    :ensure t
+    :config
+    (nyan-mode)
+    (nyan-start-animation))
+
   (use-package dired-sidebar
     :ensure t)
 
@@ -311,7 +317,9 @@ Set titlebar style
   (use-package switch-buffer-functions
     :ensure t
     :init
-    (add-hook 'switch-buffer-functions (lambda (prev cur) (interactive)(save-some-buffers t))))
+    (add-hook 'switch-buffer-functions (lambda (prev cur)
+                                         (interactive)
+                                         (save-some-buffers t))))
 
   (use-package flycheck
     :ensure t

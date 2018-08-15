@@ -362,6 +362,8 @@ Set titlebar style
   (use-package projectile
     :ensure t
     :demand
+    :bind (:map projectile-mode-map
+                ("C-c p" . projectile-command-map))
     :init
     (setq projectile-switch-project-action 'projectile-vc)
     (setq projectile-mode-line

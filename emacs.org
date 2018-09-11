@@ -2,7 +2,7 @@
 #+AUTHOR: Julian Herrera
 #+PROPERTY: header-args :tangle yes
 
-* Table Of Contents :TOC_5_gh:
+* Table Of Contents                                                :TOC_5_gh:
 - [[#configuration][Configuration]]
   - [[#package-management][Package Management]]
     - [[#sources][Sources]]
@@ -28,23 +28,29 @@
 * Configuration
 
 ** Package Management
-*** Sources :noexport_1:
-**** First we're going to add [[melpa.org][melpa]] as a source for packages
- #+BEGIN_SRC emacs-lisp
-   (require 'package)
-   (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
-           (not (gnutls-available-p))))
-    (proto (if no-ssl "http" "https")))
-     ;; Comment/uncomment these two lines to enable/disable MELPA and MELPA Stable as desired
-     (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
-     ;;(add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
-     (when (< emacs-major-version 24)
-       ;; For important compatibility libraries like cl-lib
-       (add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))))
-   (package-initialize)
+*** Sources
+
+First we're going to add [[melpa.org][melpa]] as a source for packages
+
+#+BEGIN_SRC emacs-lisp
+ (require 'package)
+ (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
+                     (not (gnutls-available-p))))
+        (proto (if no-ssl "http" "https")))
+   ;; Comment/uncomment these two lines to enable/disable MELPA and MELPA Stable as desired
+   (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
+   ;;(add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
+   (when (< emacs-major-version 24)
+     ;; For important compatibility libraries like cl-lib
+     (add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))))
+ (package-initialize)
  #+END_SRC
-*** Use-Package :noexport_1:
-**** Then we make sure [[https://github.com/jwiegley/use-package][use-package]] is available, if it's not we install it.
+
+
+*** Use-Package
+
+Make sure [[https://github.com/jwiegley/use-package][use-package]] is available, if it's not we install it.
+
  #+BEGIN_SRC emacs-lisp
    (unless (package-installed-p 'use-package)
      (package-refresh-contents)
@@ -53,15 +59,17 @@
    (require 'use-package)
  #+END_SRC 
 
-** Editor Configuration :noexport_1:
+** Editor Configuration                                         :noexport_1:
 
 *** Keep changes from 'customize' in a seperate file
+
  #+BEGIN_SRC emacs-lisp
    (setq custom-file "~/.emacs.d/.emacs-customize.el")
    (load custom-file)
  #+END_SRC
 
 *** Save all backups in one place
+
  #+BEGIN_SRC emacs-lisp
     (setq backup-directory-alist
           `(("." . ,(concat user-emacs-directory "backups"))))
@@ -74,16 +82,19 @@
  #+END_SRC
 
 *** Enable shift+arrow keys to change active window
+
 #+BEGIN_SRC emacs-lisp
   (windmove-default-keybindings)
 #+END_SRC
 
 *** On some touchpads mouse-2 annoys me (middle wheel click), disable it
+
 #+BEGIN_SRC emacs-lisp
   (global-unset-key [mouse-2])
 #+END_SRC
 
 *** Enable and configure recentf-mode (recent-files)
+
 #+BEGIN_SRC emacs-lisp
   (recentf-mode 1)
   (setq recentf-max-saved-items 200)
@@ -98,6 +109,7 @@
 *** Customize titlebar
 Show path to file and, if available, the project name.
 Set titlebar style
+
 #+BEGIN_SRC emacs-lisp
 (defun frame-title-format ()
   "Return frame title with current project name, where applicable."
@@ -116,6 +128,7 @@ Set titlebar style
 #+END_SRC
 
 *** Various small quality of life changes
+
 #+BEGIN_SRC emacs-lisp
   (scroll-bar-mode 0)
   (tool-bar-mode 0)
@@ -125,16 +138,19 @@ Set titlebar style
   (line-number-mode 1)
   (column-number-mode 1)
   (show-paren-mode 1)
-  (global-hl-line-mode 1)
+  (setq show-paren-style 'expression)
+  (global-hl-line-mode 0)
   (eldoc-mode 1)
 #+END_SRC
 
 *** Enable toggle code foldings with C-c @ C-c
+
 #+BEGIN_SRC emacs-lisp
   (add-hook 'prog-mode-hook (lambda () (interactive)(hs-minor-mode 1)))
 #+END_SRC
 
 *** Enable undo window layout changes with C-c Left and C-c Right
+
 #+BEGIN_SRC emacs-lisp
   (winner-mode 1)
 #+END_SRC
@@ -149,7 +165,9 @@ Set titlebar style
 
 *** Set a custom font
 #+BEGIN_SRC emacs-lisp
-  (add-to-list 'default-frame-alist '(font . "Monofur 16"))
+(set-face-attribute 'default nil :family "Triplicate T4c" :height 160)
+(set-face-attribute 'fixed-pitch nil :family "Triplicate T4c" :height 160)
+(set-face-attribute 'variable-pitch nil :family "Times New Roman" :height 180)
 #+END_SRC
 
 *** Override a couple of default keybindings
@@ -225,185 +243,185 @@ Set titlebar style
 ** Package Configuration
 *** General
 #+BEGIN_SRC emacs-lisp
-  (use-package leuven-theme
-    :ensure t
-    :config
-    (load-theme 'leuven 'no-confirm))
+(use-package monotropic-theme
+  :ensure t
+  :config
+  (load-theme 'monotropic 'no-confirm))
 
-  (use-package golden-ratio-scroll-screen
-    :ensure t
-    :bind(([remap scroll-down-command] . golden-ratio-scroll-screen-down)
-          ([remap scroll-up-command] . golden-ratio-scroll-screen-up)))
+(use-package golden-ratio-scroll-screen
+  :ensure t
+  :bind(([remap scroll-down-command] . golden-ratio-scroll-screen-down)
+        ([remap scroll-up-command] . golden-ratio-scroll-screen-up)))
 
-  (use-package undo-tree
-    :ensure t
-    :diminish undo-tree-mode
-    :demand
-    :config
-    (global-undo-tree-mode)
-    :bind(("C-z" . undo-tree-undo)
-          ("C-M-z" . undo-tree-redo)))
+(use-package undo-tree
+  :ensure t
+  :diminish undo-tree-mode
+  :demand
+  :config
+  (global-undo-tree-mode)
+  :bind(("C-z" . undo-tree-undo)
+        ("C-M-z" . undo-tree-redo)))
 
-  (use-package dired-subtree
-    :ensure t)
+(use-package dired-subtree
+  :ensure t)
 
-  (use-package hydra
-    :ensure t)
+(use-package hydra
+  :ensure t)
 
-  (use-package nyan-mode
-    :ensure t
-    :config
-    (nyan-mode)
-    (nyan-start-animation))
+(use-package nyan-mode
+  :ensure t
+  :config
+  (nyan-mode)
+  (nyan-start-animation))
 
-  (use-package dired-sidebar
-    :ensure t)
+(use-package dired-sidebar
+  :ensure t)
 
-  (use-package ibuffer
-    :bind( "C-x C-b" . ibuffer))
+(use-package ibuffer
+  :bind( "C-x C-b" . ibuffer))
 
-  (use-package ibuffer-sidebar
-    :after (ibuffer)
-    :ensure t)
+(use-package ibuffer-sidebar
+  :after (ibuffer)
+  :ensure t)
 
-  (use-package editorconfig
-    :ensure t
-    :config
-    (editorconfig-mode 1))
+(use-package editorconfig
+  :ensure t
+  :config
+  (editorconfig-mode 1))
 
-  (use-package wgrep
-    :ensure t)
+(use-package wgrep
+  :ensure t)
 
-  (use-package smex
-    :ensure t)
+(use-package smex
+  :ensure t)
 
-  (use-package dedicated
-    :ensure t)
+(use-package dedicated
+  :ensure t)
 
-  (use-package htmlize
-    :ensure t)
+(use-package htmlize
+  :ensure t)
 
-  (use-package ace-window
-    :ensure t
-    :bind([remap other-window] . ace-window)
-    :init
-    (setq aw-dispatch-always t)
-    :config
-    (custom-set-faces
-     '(aw-leading-char-face
-       ((t (:inherit ace-jump-face-foreground :height 3.0))))))
+(use-package ace-window
+  :ensure t
+  :bind([remap other-window] . ace-window)
+  :init
+  (setq aw-dispatch-always t)
+  :config
+  (custom-set-faces
+   '(aw-leading-char-face
+     ((t (:inherit ace-jump-face-foreground :height 3.0))))))
 
-  (use-package multiple-cursors
-    :ensure t
-    :bind("C-c m" . hydra-multiple-cursors/body))
+(use-package multiple-cursors
+  :ensure t
+  :bind("C-c m" . hydra-multiple-cursors/body))
 
-  (defhydra hydra-multiple-cursors (:hint nil)
-    "
+(defhydra hydra-multiple-cursors (:hint nil)
+  "
        ^Up^            ^Down^        ^Miscellaneous^
   ----------------------------------------------
   [_p_]   Next    [_n_]   Next    [_l_] Edit lines
   [_P_]   Skip    [_N_]   Skip    [_a_] Mark all
   [_M-p_] Unmark  [_M-n_] Unmark  [_q_] Quit"
-    ("l" mc/edit-lines :exit t)
-    ("a" mc/mark-all-like-this :exit t)
-    ("n" mc/mark-next-like-this)
-    ("N" mc/skip-to-next-like-this)
-    ("M-n" mc/unmark-next-like-this)
-    ("p" mc/mark-previous-like-this)
-    ("P" mc/skip-to-previous-like-this)
-    ("M-p" mc/unmark-previous-like-this)
-    ("q" nil))
+  ("l" mc/edit-lines :exit t)
+  ("a" mc/mark-all-like-this :exit t)
+  ("n" mc/mark-next-like-this)
+  ("N" mc/skip-to-next-like-this)
+  ("M-n" mc/unmark-next-like-this)
+  ("p" mc/mark-previous-like-this)
+  ("P" mc/skip-to-previous-like-this)
+  ("M-p" mc/unmark-previous-like-this)
+  ("q" nil))
 
-  (use-package switch-buffer-functions
-    :ensure t
-    :init
-    (add-hook 'switch-buffer-functions (lambda (prev cur)
-                                         (interactive)
-                                         (save-some-buffers t))))
+(use-package switch-buffer-functions
+  :ensure t
+  :init
+  (add-hook 'switch-buffer-functions (lambda (prev cur)
+                                       (interactive)
+                                       (save-some-buffers t))))
 
-  (use-package flycheck
-    :ensure t
-    :defer 1
-    :diminish (flycheck-mode . "Fly")
-    :hook
-    (after-init . global-flycheck-mode))
+(use-package flycheck
+  :ensure t
+  :defer 1
+  :diminish (flycheck-mode . "Fly")
+  :hook
+  (after-init . global-flycheck-mode))
 
-  (use-package adaptive-wrap
-    :ensure t)
+(use-package adaptive-wrap
+  :ensure t)
 
-  (use-package yasnippet
-    :ensure t
-    :diminish yas-minor-mode
-    :hook
-    (prog-mode . yas-minor-mode)
-    :config
-    (yas-reload-all))
+(use-package yasnippet
+  :ensure t
+  :diminish yas-minor-mode
+  :hook
+  (prog-mode . yas-minor-mode)
+  :config
+  (yas-reload-all))
 
-  (use-package duplicate-thing
-    :ensure t
-    :bind(("C-c C-d" . duplicate-thing)))
+(use-package duplicate-thing
+  :ensure t
+  :bind(("C-c C-d" . duplicate-thing)))
 
-  (use-package exec-path-from-shell
-    :if (memq window-system '(mac ns x))
-    :ensure t
-    :config
-    (exec-path-from-shell-initialize))
+(use-package exec-path-from-shell
+  :if (memq window-system '(mac ns x))
+  :ensure t
+  :config
+  (exec-path-from-shell-initialize))
 
-  (use-package visual-regexp
-    :ensure t)
+(use-package visual-regexp
+  :ensure t)
 
-  (use-package smartparens
-    :ensure t
-    :init
-    (require 'smartparens-config)
-    :bind
-    :hook (prog-mode . smartparens-mode))
+(use-package smartparens
+  :ensure t
+  :init
+  (require 'smartparens-config)
+  :bind
+  :hook (prog-mode . smartparens-mode))
 
-  (use-package projectile
-    :ensure t
-    :demand
-    :bind (:map projectile-mode-map
-                ("C-c p" . projectile-command-map))
-    :init
-    (setq projectile-switch-project-action 'projectile-vc)
-    (setq projectile-mode-line
-          '(:eval
-            (format " Pr[%s]"
-                    (projectile-project-name))))
-    :config
-    (projectile-mode))
+(use-package projectile
+  :ensure t
+  :demand
+  :bind (:map projectile-mode-map
+              ("C-c p" . projectile-command-map))
+  :init
+  (setq projectile-switch-project-action 'projectile-vc)
+  (setq projectile-mode-line
+        '(:eval
+          (format " Pr[%s]"
+                  (projectile-project-name))))
+  :config
+  (projectile-mode))
 
-  (use-package expand-region
-    :ensure t
-    :bind(("C-=" . er/expand-region)
-          ("C--" . er/contract-region)))
+(use-package expand-region
+  :ensure t
+  :bind(("C-=" . er/expand-region)
+        ("C--" . er/contract-region)))
 
-  (use-package diminish
-    :ensure t
-    :config
-    (diminish 'auto-revert-mode))
+(use-package diminish
+  :ensure t
+  :config
+  (diminish 'auto-revert-mode))
 
-  (use-package rainbow-delimiters
-    :ensure t
-    :init
-    (add-hook 'prog-mode-hook 'rainbow-delimiters-mode-enable))
+(use-package rainbow-delimiters
+  :ensure t
+  :init
+  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode-enable))
 
-  (use-package graphql-mode
-    :ensure t)
+(use-package graphql-mode
+  :ensure t)
 
-  (use-package restclient
-    :ensure t
-    :mode ("\\.rest\\'" . restclient-mode))
+(use-package restclient
+  :ensure t
+  :mode ("\\.rest\\'" . restclient-mode))
 
-  (use-package company-restclient
-    :ensure t
-    :hook (restclient-mode . (lambda ()
-                               (add-to-list 'company-backends 'company-restclient))))
+(use-package company-restclient
+  :ensure t
+  :hook (restclient-mode . (lambda ()
+                             (add-to-list 'company-backends 'company-restclient))))
 
-  (use-package olivetti
-    :ensure t
-    :init
-    (setq olivetti-body-width 80))
+(use-package olivetti
+  :ensure t
+  :init
+  (setq olivetti-body-width 80))
 #+END_SRC
 
 **** Helm
@@ -482,6 +500,8 @@ Set titlebar style
     (setq magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1 )
     :bind("C-x g" . magit-status)
     :config
+    (magit-define-popup-switch 'magit-push-popup
+    ?t "Follow tags" "--follow-tags")
     ;; Protect against accident pushes to upstream
     (defadvice magit-push-current-to-upstream
   (around my-protect-accidental-magit-push-current-to-upstream)
@@ -520,45 +540,45 @@ Set titlebar style
 
 **** Org
 #+BEGIN_SRC emacs-lisp
-  (use-package org
-    :ensure t
-    :after olivetti
-    :init
-    (setq org-src-fontify-natively t)
-    (setq org-src-tab-acts-natively t)
-    (setq org-confirm-babel-evaluate nil)
-    (setq org-src-window-setup 'current-window)
-    (setq org-startup-folded nil)
-    (setq org-agenda-files (list "~/Dropbox/org/notes.org"
-         "~/Dropbox/org/personal.org"))
-    (setq org-plantuml-jar-path
-      (expand-file-name "~/plantuml.jar"))
-    :bind
-    (("C-c l" . 'org-store-link)
-     ("C-c a" . 'org-agenda))
-    :hook
-    (org-mode . olivetti-mode)
-    :config
-    (org-babel-do-load-languages
-     'org-babel-load-languages
-     '((restclient . t)
-       (browser . t)
-       (shell . t)
-       (scheme . t)
-       (gnuplot . t)
-       (plantuml . t)
-       (js . t))))
+(use-package org
+  :ensure t
+  :init
+  (setq org-src-fontify-natively t)
+  (setq org-src-tab-acts-natively t)
+  (setq org-confirm-babel-evaluate nil)
+  (setq org-src-window-setup 'other-window)
+  (setq org-startup-folded nil)
+  (setq org-edit-src-content-indentation 0)
+  (setq org-startup-indented t)
+  (setq org-fontify-whole-heading-line t)
+  (setq org-agenda-files (list "~/Dropbox/org/notes.org"
+                               "~/Dropbox/org/personal.org"))
+  (setq org-plantuml-jar-path
+        (expand-file-name "~/plantuml.jar"))
+  :bind
+  (("C-c l" . 'org-store-link)
+   ("C-c a" . 'org-agenda))
+  :config
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((restclient . t)
+     (browser . t)
+     (shell . t)
+     (scheme . t)
+     (gnuplot . t)
+     (plantuml . t)
+     (js . t))))
 
-  (use-package ob-restclient
-    :ensure t)
+(use-package ob-restclient
+  :ensure t)
 
-  (use-package ob-browser
-    :ensure t)
+(use-package ob-browser
+  :ensure t)
 
-  (use-package toc-org
-    :ensure t
-    :after org
-    :hook (org-mode . toc-org-enable))
+(use-package toc-org
+  :ensure t
+  :after org
+  :hook (org-mode . toc-org-enable))
 #+END_SRC
 
 **** Gnuplot
@@ -598,71 +618,75 @@ Set titlebar style
 
 **** Javascript
 #+BEGIN_SRC emacs-lisp
-  (setq js-switch-indent-offset 2)
+    (setq js-switch-indent-offset 2)
 
-  (use-package eslint-fix
-    :ensure t)
+    (use-package eslint-fix
+      :ensure t)
 
-  (use-package js2-mode
-    :ensure t
-    :init
-    (setq js2-include-node-externs t)
-    (setq js2-include-browser-externs t)
-    (setq js2-mode-show-parse-errors nil)
-    (setq js2-mode-show-strict-warnings nil)
-    :config
-    (js2-imenu-extras-mode))
+    (use-package js2-mode
+      :ensure t
+      :init
+      (setq js2-include-node-externs t)
+      (setq js2-include-browser-externs t)
+      (setq js2-mode-show-parse-errors nil)
+      (setq js2-mode-show-strict-warnings nil)
+      :config
+      (js2-imenu-extras-mode))
 
-  (use-package rjsx-mode
-    :ensure t
-    :mode(("\\.js\\'" . rjsx-mode)
-    ("\\.jsx\\'" . rjsx-mode)))
+    (use-package rjsx-mode
+      :ensure t
+      :mode(("\\.js\\'" . rjsx-mode)
+      ("\\.jsx\\'" . rjsx-mode)))
 
-  (defadvice js-jsx-indent-line (after js-jsx-indent-line-after-hack activate)
-    "Workaround 'sgml-mode' and follow airbnb component style."
-    (save-match-data
-      (save-excursion
-  (goto-char (line-beginning-position))
-  (when (looking-at "^\\( +\\)\/?> *$")
-    (let ((empty-spaces (match-string 1)))
-      (while (search-forward empty-spaces (line-end-position) t)
-        (replace-match (make-string (- (length empty-spaces) sgml-basic-offset)
-            32))))))))
+    (defadvice js-jsx-indent-line (after js-jsx-indent-line-after-hack activate)
+      "Workaround 'sgml-mode' and follow airbnb component style."
+      (save-match-data
+        (save-excursion
+    (goto-char (line-beginning-position))
+    (when (looking-at "^\\( +\\)\/?> *$")
+      (let ((empty-spaces (match-string 1)))
+        (while (search-forward empty-spaces (line-end-position) t)
+          (replace-match (make-string (- (length empty-spaces) sgml-basic-offset)
+              32))))))))
 
-  (use-package js2-refactor
-    :ensure t
-    :hook (js2-mode . js2-refactor-mode)
-    :config
-    (js2r-add-keybindings-with-prefix "C-c C-m"))
+    (use-package js2-refactor
+      :ensure t
+      :hook (js2-mode . js2-refactor-mode)
+      :config
+      (js2r-add-keybindings-with-prefix "C-c C-m"))
 
-  (use-package add-node-modules-path
-    :ensure t
-    :hook (js2-mode . add-node-modules-path))
+    (use-package js2-highlight-vars
+      :ensure t
+      :hook (js2-mode . js2-highlight-vars-mode))
 
-  (defun setup-tide-mode ()
-    "Custom Tide setup function."
-    (interactive)
-    (tide-setup)
-    (flycheck-mode +1)
-    (setq flycheck-check-syntax-automatically '(save mode-enabled))
-    (eldoc-mode +1)
-    (tide-hl-identifier-mode +1)
-    (company-mode +1))
+    (use-package add-node-modules-path
+      :ensure t
+      :hook (js2-mode . add-node-modules-path))
 
-  (use-package tide
-    :ensure t
-    :hook
-    (js2-mode . setup-tide-mode))
+    (defun setup-tide-mode ()
+      "Custom Tide setup function."
+      (interactive)
+      (tide-setup)
+      (flycheck-mode +1)
+      (setq flycheck-check-syntax-automatically '(save mode-enabled))
+      (eldoc-mode +1)
+      (tide-hl-identifier-mode +1)
+      (company-mode +1))
 
-  (use-package indium
-    :ensure t
-    :diminish (indium-interaction-mode . "In" )
-    :hook (js2-mode . indium-interaction-mode))
+    (use-package tide
+      :ensure t
+      :hook
+      (js2-mode . setup-tide-mode))
 
-  (use-package prettier-js
-     :ensure t
-     :after add-node-modules-path
-     :hook (js2-mode . prettier-js-mode))
+    (use-package indium
+      :ensure t
+      :diminish (indium-interaction-mode . "In" )
+      :hook (js2-mode . indium-interaction-mode))
+
+    (use-package prettier-js
+       :ensure t
+       :after add-node-modules-path
+       :hook (js2-mode . prettier-js-mode))
 #+END_SRC
 
 **** JSON

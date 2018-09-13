@@ -22,7 +22,7 @@
     ("#183691" "#969896" "#a71d5d" "#969896" "#0086b3" "#795da3" "#a71d5d" "#969896")))
  '(package-selected-packages
    (quote
-    (monotropic-theme leuven org-bullets org-variable-pitch moe-theme sunburn-theme doneburn-theme ample-theme paper-theme chyla-theme habamax-theme github-theme nyan-mode htmlize gnuplot gnuplot-mode ob-browser ob-html simple-httpd prettier-js hydra olivetti olivetti-mode restclient company-restclient graphql-mode switch-buffer-functions ob-mongo fountain-mode company-lua lua-mode markdown-mode company-jedi python-mode rainbow-mode emmet-mode company-web web-mode json-mode indium tide add-node-modules-path js2-refactor rjsx-mode js2-mode eslint-fix company-quickhelp company toc-org ob-restclient diff-hl gitignore-mode git-link magit helm-dash helm-ag helm-fuzzier helm-flx helm-projectile helm-smex helm-swoop helm rainbow-delimiters diminish expand-region projectile smartparens visual-regexp exec-path-from-shell duplicate-thing yasnippet adaptive-wrap flycheck multiple-cursors ace-window dedicated smex wgrep editorconfig ibuffer-sidebar dired-sidebar dired-subtree undo-tree golden-ratio-scroll-screen leuven-theme use-package)))
+    (impatient-mode monotropic-theme leuven org-bullets org-variable-pitch moe-theme sunburn-theme doneburn-theme ample-theme paper-theme chyla-theme habamax-theme github-theme nyan-mode htmlize gnuplot gnuplot-mode ob-browser ob-html simple-httpd prettier-js hydra olivetti olivetti-mode restclient company-restclient graphql-mode switch-buffer-functions ob-mongo fountain-mode company-lua lua-mode markdown-mode company-jedi python-mode rainbow-mode emmet-mode company-web web-mode json-mode indium tide add-node-modules-path js2-refactor rjsx-mode js2-mode eslint-fix company-quickhelp company toc-org ob-restclient diff-hl gitignore-mode git-link magit helm-dash helm-ag helm-fuzzier helm-flx helm-projectile helm-smex helm-swoop helm rainbow-delimiters diminish expand-region projectile smartparens visual-regexp exec-path-from-shell duplicate-thing yasnippet adaptive-wrap flycheck multiple-cursors ace-window dedicated smex wgrep editorconfig ibuffer-sidebar dired-sidebar dired-subtree undo-tree golden-ratio-scroll-screen leuven-theme use-package)))
  '(pdf-view-midnight-colors (quote ("#969896" . "#f8eec7")))
  '(vc-annotate-background "#b0cde7")
  '(vc-annotate-color-map
@@ -51,4 +51,5 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(aw-leading-char-face ((t (:inherit ace-jump-face-foreground :height 3.0)))))
+ '(aw-leading-char-face ((t (:inherit ace-jump-face-foreground :height 3.0))))
+ '(mode-line-inactive ((t (:background "#ddddda" :foreground "#555555")))))

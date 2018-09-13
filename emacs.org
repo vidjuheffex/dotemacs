@@ -165,9 +165,9 @@ Set titlebar style
 
 *** Set a custom font
 #+BEGIN_SRC emacs-lisp
-(set-face-attribute 'default nil :family "Triplicate T4c" :height 160)
-(set-face-attribute 'fixed-pitch nil :family "Triplicate T4c" :height 160)
-(set-face-attribute 'variable-pitch nil :family "Times New Roman" :height 180)
+(set-face-attribute 'default nil :family "Triplicate T4c" :height 120)
+(set-face-attribute 'fixed-pitch nil :family "Triplicate T4c" :height 120)
+(set-face-attribute 'variable-pitch nil :family "Times New Roman" :height 120)
 #+END_SRC
 
 *** Override a couple of default keybindings
@@ -238,6 +238,22 @@ Set titlebar style
   (setq mac-command-modifier 'meta)
   (setq mac-option-modifier nil))
 
+#+END_SRC
+
+*** Buffer Colorize
+#+BEGIN_SRC emacs-lisp
+;; load package
+(require 'ansi-color)
+
+;; function for colorizing
+(defun colorize-buffer ()
+  (interactive)
+  (toggle-read-only)
+  (ansi-color-apply-on-region (point-min) (point-max))
+  (toggle-read-only))
+
+;; add hook to apply the function when magit mode is enabled
+(add-hook 'magit-mode-hook 'colorize-buffer)
 #+END_SRC
 
 ** Package Configuration
@@ -374,7 +390,8 @@ Set titlebar style
   :ensure t
   :init
   (require 'smartparens-config)
-  :bind
+  :config
+  (sp-use-smartparens-bindings)
   :hook (prog-mode . smartparens-mode))
 
 (use-package projectile
@@ -401,10 +418,10 @@ Set titlebar style
   :config
   (diminish 'auto-revert-mode))
 
-(use-package rainbow-delimiters
-  :ensure t
-  :init
-  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode-enable))
+;; (use-package rainbow-delimiters
+;;   :ensure t
+;;   :init
+;;   (add-hook 'prog-mode-hook 'rainbow-delimiters-mode-enable))
 
 (use-package graphql-mode
   :ensure t)
@@ -654,10 +671,6 @@ Set titlebar style
       :hook (js2-mode . js2-refactor-mode)
       :config
       (js2r-add-keybindings-with-prefix "C-c C-m"))
-
-    (use-package js2-highlight-vars
-      :ensure t
-      :hook (js2-mode . js2-highlight-vars-mode))
 
     (use-package add-node-modules-path
       :ensure t

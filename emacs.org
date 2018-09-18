@@ -563,7 +563,7 @@ Set titlebar style
   (setq org-src-fontify-natively t)
   (setq org-src-tab-acts-natively t)
   (setq org-confirm-babel-evaluate nil)
-  (setq org-src-window-setup 'other-window)
+  (setq org-src-window-setup 'current-window)
   (setq org-startup-folded nil)
   (setq org-edit-src-content-indentation 0)
   (setq org-startup-indented t)
@@ -571,7 +571,11 @@ Set titlebar style
   (setq org-agenda-files (list "~/Dropbox/org/notes.org"
                                "~/Dropbox/org/personal.org"))
   (setq org-plantuml-jar-path
-        (expand-file-name "~/plantuml.jar"))
+        (expand-file-name "~/Dropbox/jars/plantuml.jar"))
+  (setq org-ditaa-jar-path
+        (expand-file-name "~/Dropbox/jars/ditaa0_6b.jar"))
+  (setq org-ditaa-eps-jar-path
+        (expand-file-name "~/Dropbox/jars/DitaaEps.jar"))
   :bind
   (("C-c l" . 'org-store-link)
    ("C-c a" . 'org-agenda))

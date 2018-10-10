@@ -8,6 +8,8 @@
     - [[#sources][Sources]]
     - [[#use-package][Use-Package]]
   - [[#editor-configuration][Editor Configuration]]
+  - [[#buffer-colorize][Buffer Colorize]]
+  - [[#ediff][Ediff]]
   - [[#package-configuration][Package Configuration]]
     - [[#general][General]]
       - [[#helm][Helm]]
@@ -139,7 +141,7 @@ Set titlebar style
   (column-number-mode 1)
   (show-paren-mode 1)
   (setq show-paren-style 'expression)
-  (global-hl-line-mode 0)
+  (global-hl-line-mode 1)
   (eldoc-mode 1)
 #+END_SRC
 
@@ -165,9 +167,9 @@ Set titlebar style
 
 *** Set a custom font
 #+BEGIN_SRC emacs-lisp
-(set-face-attribute 'default nil :family "Triplicate T4c" :height 120)
-(set-face-attribute 'fixed-pitch nil :family "Triplicate T4c" :height 120)
-(set-face-attribute 'variable-pitch nil :family "Times New Roman" :height 120)
+(set-face-attribute 'default nil :family "Triplicate T4c" :height 140)
+(set-face-attribute 'fixed-pitch nil :family "Triplicate T4c" :height 140)
+(set-face-attribute 'variable-pitch nil :family "Times New Roman" :height 140)
 #+END_SRC
 
 *** Override a couple of default keybindings
@@ -240,7 +242,7 @@ Set titlebar style
 
 #+END_SRC
 
-*** Buffer Colorize
+** Buffer Colorize
 #+BEGIN_SRC emacs-lisp
 ;; load package
 (require 'ansi-color)
@@ -254,6 +256,13 @@ Set titlebar style
 
 ;; add hook to apply the function when magit mode is enabled
 (add-hook 'magit-mode-hook 'colorize-buffer)
+#+END_SRC
+
+** Ediff
+We don't want that annoying floating frame that ediff uses by default.
+
+#+BEGIN_SRC emacs-lisp
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
 #+END_SRC
 
 ** Package Configuration
@@ -572,6 +581,12 @@ Set titlebar style
                                "~/Dropbox/org/personal.org"))
   (setq org-plantuml-jar-path
         (expand-file-name "~/plantuml.jar"))
+  ;; Make windmove work in org-mode:
+  (add-hook 'org-shiftup-final-hook 'windmove-up)
+  (add-hook 'org-shiftleft-final-hook 'windmove-left)
+  (add-hook 'org-shiftdown-final-hook 'windmove-down)
+  (add-hook 'org-shiftright-final-hook 'windmove-right)
+
   :bind
   (("C-c l" . 'org-store-link)
    ("C-c a" . 'org-agenda))

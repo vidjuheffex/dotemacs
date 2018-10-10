@@ -52,4 +52,5 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(aw-leading-char-face ((t (:inherit ace-jump-face-foreground :height 3.0))))
+ '(golden-ratio-scroll-highlight-line-face ((t (:background "#ddddda" :foreground "white" :weight bold))))
  '(mode-line-inactive ((t (:background "#ddddda" :foreground "#555555")))))

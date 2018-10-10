@@ -572,7 +572,7 @@ We don't want that annoying floating frame that ediff uses by default.
   (setq org-src-fontify-natively t)
   (setq org-src-tab-acts-natively t)
   (setq org-confirm-babel-evaluate nil)
-  (setq org-src-window-setup 'other-window)
+  (setq org-src-window-setup 'current-window)
   (setq org-startup-folded nil)
   (setq org-edit-src-content-indentation 0)
   (setq org-startup-indented t)
@@ -581,12 +581,16 @@ We don't want that annoying floating frame that ediff uses by default.
                                "~/Dropbox/org/personal.org"))
   (setq org-plantuml-jar-path
         (expand-file-name "~/plantuml.jar"))
+        (expand-file-name "~/Dropbox/jars/plantuml.jar"))
+  (setq org-ditaa-jar-path
+        (expand-file-name "~/Dropbox/jars/ditaa0_6b.jar"))
+  (setq org-ditaa-eps-jar-path
+        (expand-file-name "~/Dropbox/jars/DitaaEps.jar"))
   ;; Make windmove work in org-mode:
   (add-hook 'org-shiftup-final-hook 'windmove-up)
   (add-hook 'org-shiftleft-final-hook 'windmove-left)
   (add-hook 'org-shiftdown-final-hook 'windmove-down)
   (add-hook 'org-shiftright-final-hook 'windmove-right)
-
   :bind
   (("C-c l" . 'org-store-link)
    ("C-c a" . 'org-agenda))

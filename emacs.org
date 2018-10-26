@@ -26,6 +26,7 @@
       - [[#scheme][Scheme]]
       - [[#lua][Lua]]
       - [[#fountain][Fountain]]
+      - [[#cider][Cider]]
 
 * Configuration
 
@@ -580,7 +581,6 @@ We don't want that annoying floating frame that ediff uses by default.
   (setq org-agenda-files (list "~/Dropbox/org/notes.org"
                                "~/Dropbox/org/personal.org"))
   (setq org-plantuml-jar-path
-        (expand-file-name "~/plantuml.jar"))
         (expand-file-name "~/Dropbox/jars/plantuml.jar"))
   (setq org-ditaa-jar-path
         (expand-file-name "~/Dropbox/jars/ditaa0_6b.jar"))
@@ -824,4 +824,10 @@ We don't want that annoying floating frame that ediff uses by default.
 #+BEGIN_SRC emacs-lisp
   (use-package fountain-mode
     :ensure t)
+#+END_SRC
+
+**** Cider
+#+BEGIN_SRC emacs-lisp
+(use-package cider
+  :ensure t)
 #+END_SRC

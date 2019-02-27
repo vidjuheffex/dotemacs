@@ -128,22 +128,24 @@ Set titlebar style
 
 (setq-default frame-title-format '((:eval (frame-title-format))))
 (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+(add-to-list 'default-frame-alist '(ns-appearance . dark))
 #+END_SRC
 
 *** Various small quality of life changes
 
 #+BEGIN_SRC emacs-lisp
-  (scroll-bar-mode 0)
-  (tool-bar-mode 0)
-  (menu-bar-mode 0)
-  (delete-selection-mode 1)
-  (global-auto-revert-mode 1)
-  (line-number-mode 1)
-  (column-number-mode 1)
-  (show-paren-mode 1)
-  (setq show-paren-style 'expression)
-  (global-hl-line-mode 1)
-  (eldoc-mode 1)
+(scroll-bar-mode 0)
+(tool-bar-mode 0)
+(menu-bar-mode 0)
+(delete-selection-mode 1)
+(global-auto-revert-mode 1)
+(line-number-mode 1)
+(column-number-mode 1)
+(show-paren-mode 1)
+(setq show-paren-style 'expression)
+(global-hl-line-mode 1)
+(eldoc-mode 1)
+(setq max-lisp-eval-depth 10000)
 #+END_SRC
 
 *** Enable toggle code foldings with C-c @ C-c
@@ -164,13 +166,6 @@ Set titlebar style
   (setq ring-bell-function 'ignore)
   (setq-default indent-tabs-mode nil)
   (setq-default tab-width 2)
-#+END_SRC
-
-*** Set a custom font
-#+BEGIN_SRC emacs-lisp
-(set-face-attribute 'default nil :family "Triplicate T4c" :height 140)
-(set-face-attribute 'fixed-pitch nil :family "Triplicate T4c" :height 140)
-(set-face-attribute 'variable-pitch nil :family "Times New Roman" :height 140)
 #+END_SRC
 
 *** Override a couple of default keybindings
@@ -269,10 +264,10 @@ We don't want that annoying floating frame that ediff uses by default.
 ** Package Configuration
 *** General
 #+BEGIN_SRC emacs-lisp
-(use-package monotropic-theme
+(use-package nova-theme
   :ensure t
   :config
-  (load-theme 'monotropic 'no-confirm))
+  (load-theme 'nova 'no-confirm))
 
 (use-package golden-ratio-scroll-screen
   :ensure t
@@ -462,7 +457,9 @@ We don't want that annoying floating frame that ediff uses by default.
     (setq helm-completion-in-region-fuzzy-match t)
     (setq helm-echo-input-in-header-line t)
     (setq helm-follow-mode-persistent t)
-    (setq helm-split-window-inside-p t)
+    (setq helm-display-function 'helm-display-buffer-in-own-frame
+        helm-display-buffer-reuse-frame t
+        helm-use-undecorated-frame-option t)
     :bind(("C-x f" . helm-recentf)
     ("C-x b" . helm-mini)
     ("C-c s" . helm-occur)
@@ -605,6 +602,8 @@ We don't want that annoying floating frame that ediff uses by default.
      (plantuml . t)
      (js . t))))
 
+(use-package org-protocol)
+
 (use-package ob-restclient
   :ensure t)
 
@@ -654,71 +653,69 @@ We don't want that annoying floating frame that ediff uses by default.
 
 **** Javascript
 #+BEGIN_SRC emacs-lisp
-    (setq js-switch-indent-offset 2)
+(setq js-switch-indent-offset 2)
 
-    (use-package eslint-fix
-      :ensure t)
+(use-package eslint-fix
+  :ensure t)
 
-    (use-package js2-mode
-      :ensure t
-      :init
-      (setq js2-include-node-externs t)
-      (setq js2-include-browser-externs t)
-      (setq js2-mode-show-parse-errors nil)
-      (setq js2-mode-show-strict-warnings nil)
-      :config
-      (js2-imenu-extras-mode))
+(use-package js2-mode
+  :ensure t
+  :init
+  (setq js2-include-node-externs t)
+  (setq js2-include-browser-externs t)
+  (setq js2-mode-show-parse-errors nil)
+  (setq js2-mode-show-strict-warnings nil)
+  :config
+  (js2-imenu-extras-mode))
 
-    (use-package rjsx-mode
-      :ensure t
-      :mode(("\\.js\\'" . rjsx-mode)
-      ("\\.jsx\\'" . rjsx-mode)))
+(use-package rjsx-mode
+  :ensure t
+  :mode(("\\.js\\'" . rjsx-mode)
+  ("\\.jsx\\'" . rjsx-mode)))
 
-    (defadvice js-jsx-indent-line (after js-jsx-indent-line-after-hack activate)
-      "Workaround 'sgml-mode' and follow airbnb component style."
-      (save-match-data
-        (save-excursion
-    (goto-char (line-beginning-position))
-    (when (looking-at "^\\( +\\)\/?> *$")
-      (let ((empty-spaces (match-string 1)))
-        (while (search-forward empty-spaces (line-end-position) t)
-          (replace-match (make-string (- (length empty-spaces) sgml-basic-offset)
-              32))))))))
+(defadvice js-jsx-indent-line (after js-jsx-indent-line-after-hack activate)
+  "Workaround 'sgml-mode' and follow airbnb component style."
+  (save-match-data
+    (save-excursion
+(goto-char (line-beginning-position))
+(when (looking-at "^\\( +\\)\/?> *$")
+  (let ((empty-spaces (match-string 1)))
+    (while (search-forward empty-spaces (line-end-position) t)
+      (replace-match (make-string (- (length empty-spaces) sgml-basic-offset)
+          32))))))))
 
-    (use-package js2-refactor
-      :ensure t
-      :hook (js2-mode . js2-refactor-mode)
-      :config
-      (js2r-add-keybindings-with-prefix "C-c C-m"))
+(use-package js2-refactor
+  :ensure t
+  :hook (js2-mode . js2-refactor-mode)
+  :config
+  (js2r-add-keybindings-with-prefix "C-c C-m"))
 
-    (use-package add-node-modules-path
-      :ensure t
-      :hook (js2-mode . add-node-modules-path))
+(use-package add-node-modules-path
+  :ensure t
+  :hook (js2-mode . add-node-modules-path))
 
-    (defun setup-tide-mode ()
-      "Custom Tide setup function."
-      (interactive)
-      (tide-setup)
-      (flycheck-mode +1)
-      (setq flycheck-check-syntax-automatically '(save mode-enabled))
-      (eldoc-mode +1)
-      (tide-hl-identifier-mode +1)
-      (company-mode +1))
+(use-package lsp-mode
+  :ensure t
+  :commands lsp
+:hook (prog-mode . lsp))
 
-    (use-package tide
-      :ensure t
-      :hook
-      (js2-mode . setup-tide-mode))
+(use-package lsp-ui
+  :ensure t
+  :commands lsp-ui-mode)
 
-    (use-package indium
-      :ensure t
-      :diminish (indium-interaction-mode . "In" )
-      :hook (js2-mode . indium-interaction-mode))
+(use-package company-lsp
+  :ensure t
+  :commands company-lsp)
 
-    (use-package prettier-js
-       :ensure t
-       :after add-node-modules-path
-       :hook (js2-mode . prettier-js-mode))
+(use-package indium
+  :ensure t
+  :diminish (indium-interaction-mode . "In" )
+  :hook (js2-mode . indium-interaction-mode))
+
+(use-package prettier-js
+   :ensure t
+   :after add-node-modules-path
+   :hook (js2-mode . prettier-js-mode))
 #+END_SRC
 
 **** JSON

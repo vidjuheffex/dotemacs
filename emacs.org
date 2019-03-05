@@ -18,6 +18,7 @@
       - [[#gnuplot][Gnuplot]]
       - [[#company][Company]]
     - [[#languages][Languages]]
+      - [[#lsp-mode][LSP Mode]]
       - [[#javascript][Javascript]]
       - [[#json][JSON]]
       - [[#web][Web]]
@@ -264,10 +265,10 @@ We don't want that annoying floating frame that ediff uses by default.
 ** Package Configuration
 *** General
 #+BEGIN_SRC emacs-lisp
-(use-package nova-theme
+(use-package moe-theme
   :ensure t
   :config
-  (load-theme 'nova 'no-confirm))
+  (moe-dark))
 
 (use-package golden-ratio-scroll-screen
   :ensure t
@@ -453,13 +454,6 @@ We don't want that annoying floating frame that ediff uses by default.
     :demand
     :diminish helm-mode
     :init
-    (setq helm-mode-fuzzy-match t)
-    (setq helm-completion-in-region-fuzzy-match t)
-    (setq helm-echo-input-in-header-line t)
-    (setq helm-follow-mode-persistent t)
-    (setq helm-display-function 'helm-display-buffer-in-own-frame
-        helm-display-buffer-reuse-frame t
-        helm-use-undecorated-frame-option t)
     :bind(("C-x f" . helm-recentf)
     ("C-x b" . helm-mini)
     ("C-c s" . helm-occur)
@@ -627,29 +621,52 @@ We don't want that annoying floating frame that ediff uses by default.
 
 **** Company
 #+BEGIN_SRC emacs-lisp
-  (use-package company
-    :ensure t
-    :diminish company-mode
-    :demand
-    :init
-    (setq company-idle-delay 0.3)
-    (setq company-begin-commands '(self-insert-command))
-    (setq company-minimum-prefix-length 1)
-    (setq company-tooltip-align-annotations t)
-    (setq company-tooltip-limit 20)
-    (setq company-dabbrev-downcase nil)
-    :config
-    (global-company-mode))
+(use-package company
+  :ensure t
+  :diminish company-mode
+  :demand
+  :init
+  (setq company-idle-delay 0.3)
+  (setq company-begin-commands '(self-insert-command))
+  (setq company-minimum-prefix-length 1)
+  (setq company-tooltip-align-annotations t)
+  (setq company-tooltip-limit 20)
+  (setq company-dabbrev-downcase nil)
+  :config
+  (global-company-mode))
 
-  (use-package company-quickhelp
-    :ensure t
-    :after (company)
-    :config
-    (company-quickhelp-mode))
+(use-package company-quickhelp
+  :ensure t
+  :after (company)
+  :config
+  (company-quickhelp-mode))
+
+(use-package company-box
+  :ensure t
+  :hook (company-mode . company-box-mode))
 #+END_SRC
 
 
 *** Languages
+**** LSP Mode
+Lsp allows us to utilize the same interface to multiple languages
+
+#+BEGIN_SRC emacs-lisp
+(use-package lsp-mode
+  :ensure t
+  :commands lsp
+:hook (prog-mode . lsp))
+
+(use-package lsp-ui
+  :ensure t
+  :commands lsp-ui-mode)
+
+(use-package company-lsp
+  :ensure t
+  :commands company-lsp
+  :config
+(push 'company-lsp company-backends))
+#+END_SRC
 
 **** Javascript
 #+BEGIN_SRC emacs-lisp
@@ -694,19 +711,6 @@ We don't want that annoying floating frame that ediff uses by default.
   :ensure t
   :hook (js2-mode . add-node-modules-path))
 
-(use-package lsp-mode
-  :ensure t
-  :commands lsp
-:hook (prog-mode . lsp))
-
-(use-package lsp-ui
-  :ensure t
-  :commands lsp-ui-mode)
-
-(use-package company-lsp
-  :ensure t
-  :commands company-lsp)
-
 (use-package indium
   :ensure t
   :diminish (indium-interaction-mode . "In" )
@@ -715,7 +719,7 @@ We don't want that annoying floating frame that ediff uses by default.
 (use-package prettier-js
    :ensure t
    :after add-node-modules-path
-   :hook (js2-mode . prettier-js-mode))
+   :hook (rjsx-mode . prettier-js-mode))
 #+END_SRC
 
 **** JSON

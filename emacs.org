@@ -28,6 +28,7 @@
       - [[#lua][Lua]]
       - [[#fountain][Fountain]]
       - [[#cider][Cider]]
+  - [[#review-and-remove][Review and remove]]
 
 * Configuration
 
@@ -264,12 +265,12 @@ We don't want that annoying floating frame that ediff uses by default.
 
 ** Package Configuration
 *** General
-#+BEGIN_SRC emacs-lisp
-(use-package moe-theme
+#+BEGIN_SRC emacs-lisp 
+(use-package dracula-theme
   :ensure t
   :config
-  (moe-dark))
-
+  (load-theme 'dracula t))
+ 
 (use-package golden-ratio-scroll-screen
   :ensure t
   :bind(([remap scroll-down-command] . golden-ratio-scroll-screen-down)
@@ -505,8 +506,6 @@ We don't want that annoying floating frame that ediff uses by default.
 
   (use-package helm-dash
     :ensure t
-    :init
-    (setq helm-dash-browser-func 'eww)
     :after (helm))
 #+END_SRC
 
@@ -558,56 +557,61 @@ We don't want that annoying floating frame that ediff uses by default.
 
 **** Org
 #+BEGIN_SRC emacs-lisp
-(use-package org
-  :ensure t
-  :init
-  (setq org-src-fontify-natively t)
-  (setq org-src-tab-acts-natively t)
-  (setq org-confirm-babel-evaluate nil)
-  (setq org-src-window-setup 'current-window)
-  (setq org-startup-folded nil)
-  (setq org-edit-src-content-indentation 0)
-  (setq org-startup-indented t)
-  (setq org-fontify-whole-heading-line t)
-  (setq org-agenda-files (list "~/Dropbox/org/notes.org"
-                               "~/Dropbox/org/personal.org"))
-  (setq org-plantuml-jar-path
-        (expand-file-name "~/Dropbox/jars/plantuml.jar"))
-  (setq org-ditaa-jar-path
-        (expand-file-name "~/Dropbox/jars/ditaa0_6b.jar"))
-  (setq org-ditaa-eps-jar-path
-        (expand-file-name "~/Dropbox/jars/DitaaEps.jar"))
-  ;; Make windmove work in org-mode:
-  (add-hook 'org-shiftup-final-hook 'windmove-up)
-  (add-hook 'org-shiftleft-final-hook 'windmove-left)
-  (add-hook 'org-shiftdown-final-hook 'windmove-down)
-  (add-hook 'org-shiftright-final-hook 'windmove-right)
-  :bind
-  (("C-c l" . 'org-store-link)
-   ("C-c a" . 'org-agenda))
-  :config
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((restclient . t)
-     (browser . t)
-     (shell . t)
-     (scheme . t)
-     (gnuplot . t)
-     (plantuml . t)
-     (js . t))))
+  (use-package org
+    :ensure t
+    :init
+    (setq org-src-fontify-natively t)
+    (setq org-src-tab-acts-natively t)
+    (setq org-confirm-babel-evaluate nil)
+    (setq org-src-window-setup 'current-window)
+    (setq org-startup-folded nil)
+    (setq org-edit-src-content-indentation 0)
+    (setq org-startup-indented t)
+    (setq org-fontify-whole-heading-line t)
+    (setq org-agenda-files (list "~/Dropbox/org/notes.org"
+                                 "~/Dropbox/org/personal.org"))
+    (setq org-plantuml-jar-path
+          (expand-file-name "~/Dropbox/jars/plantuml.jar"))
+    (setq org-ditaa-jar-path
+          (expand-file-name "~/Dropbox/jars/ditaa0_6b.jar"))
+    (setq org-ditaa-eps-jar-path
+          (expand-file-name "~/Dropbox/jars/DitaaEps.jar"))
+    ;; Make windmove work in org-mode:
+    (add-hook 'org-shiftup-final-hook 'windmove-up)
+    (add-hook 'org-shiftleft-final-hook 'windmove-left)
+    (add-hook 'org-shiftdown-final-hook 'windmove-down)
+    (add-hook 'org-shiftright-final-hook 'windmove-right)
+    :bind
+    (("C-c l" . 'org-store-link)
+     ("C-c a" . 'org-agenda))
+    :config
+    (setenv "NODE_PATH"
+            (concat
+             (getenv "HOME") "/code/js-parser-test/node_modules"  ":"
+             (getenv "NODE_PATH")))
 
-(use-package org-protocol)
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((restclient . t)
+       (browser . t)
+       (shell . t)
+       (scheme . t)
+       (gnuplot . t)
+       (plantuml . t)
+       (js . t))))
 
-(use-package ob-restclient
-  :ensure t)
+    (use-package org-protocol)
 
-(use-package ob-browser
-  :ensure t)
+    (use-package ob-restclient
+      :ensure t)
 
-(use-package toc-org
-  :ensure t
-  :after org
-  :hook (org-mode . toc-org-enable))
+    (use-package ob-browser
+      :ensure t)
+
+    (use-package toc-org
+      :ensure t
+      :after org
+      :hook (org-mode . toc-org-enable))
 #+END_SRC
 
 **** Gnuplot
@@ -655,7 +659,7 @@ Lsp allows us to utilize the same interface to multiple languages
 (use-package lsp-mode
   :ensure t
   :commands lsp
-:hook (prog-mode . lsp))
+  :hook (js-mode . lsp))
 
 (use-package lsp-ui
   :ensure t
@@ -665,61 +669,46 @@ Lsp allows us to utilize the same interface to multiple languages
   :ensure t
   :commands company-lsp
   :config
-(push 'company-lsp company-backends))
+  (push 'company-lsp company-backends))
 #+END_SRC
 
 **** Javascript
 #+BEGIN_SRC emacs-lisp
 (setq js-switch-indent-offset 2)
+(setq js-indent-level 2)
+
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js-mode))
+(add-to-list 'auto-mode-alist '("\\.jsx\\'" . js-mode))
+(add-to-list 'auto-mode-alist '("\\.ts\\'" . js-mode))
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . js-mode))
+
+(use-package js2-mode
+  :ensure t
+  :hook
+  (js-mode . js2-minor-mode))
 
 (use-package eslint-fix
   :ensure t)
 
-(use-package js2-mode
-  :ensure t
-  :init
-  (setq js2-include-node-externs t)
-  (setq js2-include-browser-externs t)
-  (setq js2-mode-show-parse-errors nil)
-  (setq js2-mode-show-strict-warnings nil)
-  :config
-  (js2-imenu-extras-mode))
-
-(use-package rjsx-mode
-  :ensure t
-  :mode(("\\.js\\'" . rjsx-mode)
-  ("\\.jsx\\'" . rjsx-mode)))
-
-(defadvice js-jsx-indent-line (after js-jsx-indent-line-after-hack activate)
-  "Workaround 'sgml-mode' and follow airbnb component style."
-  (save-match-data
-    (save-excursion
-(goto-char (line-beginning-position))
-(when (looking-at "^\\( +\\)\/?> *$")
-  (let ((empty-spaces (match-string 1)))
-    (while (search-forward empty-spaces (line-end-position) t)
-      (replace-match (make-string (- (length empty-spaces) sgml-basic-offset)
-          32))))))))
-
 (use-package js2-refactor
   :ensure t
-  :hook (js2-mode . js2-refactor-mode)
+  :hook (js-mode . js2-refactor-mode)
   :config
   (js2r-add-keybindings-with-prefix "C-c C-m"))
 
 (use-package add-node-modules-path
   :ensure t
-  :hook (js2-mode . add-node-modules-path))
+  :hook (js-mode . add-node-modules-path))
 
 (use-package indium
   :ensure t
   :diminish (indium-interaction-mode . "In" )
-  :hook (js2-mode . indium-interaction-mode))
+  :hook (js-mode . indium-interaction-mode))
 
 (use-package prettier-js
    :ensure t
    :after add-node-modules-path
-   :hook (rjsx-mode . prettier-js-mode))
+   :hook (js-mode . prettier-js-mode))
 #+END_SRC
 
 **** JSON
@@ -832,3 +821,11 @@ Lsp allows us to utilize the same interface to multiple languages
 (use-package cider
   :ensure t)
 #+END_SRC
+** Review and remove
+
+This is an issue with Emacs 27 on Mac OS
+#+BEGIN_SRC emacs-lisp
+(delete-file "~/Library/Colors/Emacs.clr")
+#+END_SRC
+
+v

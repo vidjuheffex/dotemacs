@@ -17,3 +17,5 @@ backups
 emacs.el
 server
 git-packages
+transient
+.lsp-session-v1

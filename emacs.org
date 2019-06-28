@@ -266,10 +266,10 @@ We don't want that annoying floating frame that ediff uses by default.
 ** Package Configuration
 *** General
 #+BEGIN_SRC emacs-lisp 
-(use-package dracula-theme
+(use-package rebecca-theme
   :ensure t
   :config
-  (load-theme 'dracula t))
+  (load-theme 'rebecca t))
  
 (use-package golden-ratio-scroll-screen
   :ensure t
@@ -645,11 +645,10 @@ We don't want that annoying floating frame that ediff uses by default.
   :config
   (company-quickhelp-mode))
 
-(use-package company-box
-  :ensure t
-  :hook (company-mode . company-box-mode))
+;; (use-package company-box
+;;   :ensure t
+;;   :hook (company-mode . company-box-mode))
 #+END_SRC
-
 
 *** Languages
 **** LSP Mode
@@ -764,6 +763,12 @@ Lsp allows us to utilize the same interface to multiple languages
     :ensure t
     :pin gnu
     :hook css-mode)
+
+  (use-package simple-httpd
+    :ensure t)
+
+  (use-package impatient-mode
+    :ensure t)
 #+END_SRC
 
 **** Python
@@ -827,5 +832,3 @@ This is an issue with Emacs 27 on Mac OS
 #+BEGIN_SRC emacs-lisp
 (delete-file "~/Library/Colors/Emacs.clr")
 #+END_SRC
-
-v

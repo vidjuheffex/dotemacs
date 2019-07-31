@@ -19,3 +19,4 @@ server
 git-packages
 transient
 .lsp-session-v1
+forge-database.sqlite

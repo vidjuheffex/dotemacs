@@ -28,6 +28,7 @@
       - [[#lua][Lua]]
       - [[#fountain][Fountain]]
       - [[#cider][Cider]]
+      - [[#yaml][YAML]]
   - [[#review-and-remove][Review and remove]]
 
 * Configuration
@@ -366,6 +367,8 @@ We don't want that annoying floating frame that ediff uses by default.
   :ensure t
   :defer 1
   :diminish (flycheck-mode . "Fly")
+  :config
+  (add-to-list 'flycheck-checkers 'lsp-ui)
   :hook
   (after-init . global-flycheck-mode))
 
@@ -507,52 +510,63 @@ We don't want that annoying floating frame that ediff uses by default.
   (use-package helm-dash
     :ensure t
     :after (helm))
+
+  (use-package helm-company
+    :ensure t
+    :after (helm company)
+    :bind (:map company-mode-map ("C-:" . helm-company)
+           :map company-active-map ("C-:" . helm-company)))
+
 #+END_SRC
 
 **** Git
 #+BEGIN_SRC emacs-lisp
-  (use-package magit
-    :ensure t
-    :init
-    (setq magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1 )
-    :bind("C-x g" . magit-status)
-    :config
-    (magit-define-popup-switch 'magit-push-popup
-    ?t "Follow tags" "--follow-tags")
-    ;; Protect against accident pushes to upstream
-    (defadvice magit-push-current-to-upstream
-  (around my-protect-accidental-magit-push-current-to-upstream)
-      "Protect against accidental push to upstream.
+(use-package magit
+  :ensure t
+  :init
+  (setq magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1 )
+  :bind("C-x g" . magit-status)
+  :config
+  (magit-define-popup-switch 'magit-push-popup
+  ?t "Follow tags" "--follow-tags")
+  ;; Protect against accident pushes to upstream
+  (defadvice magit-push-current-to-upstream
+(around my-protect-accidental-magit-push-current-to-upstream)
+    "Protect against accidental push to upstream.
 
-      Causes `magit-git-push' to ask the user for confirmation first."
-      (let ((my-magit-ask-before-push t))
-  ad-do-it))
+    Causes `magit-git-push' to ask the user for confirmation first."
+    (let ((my-magit-ask-before-push t))
+ad-do-it))
 
-    (defadvice magit-git-push (around my-protect-accidental-magit-git-push)
-      "Maybe ask the user for confirmation before pushing.
+  (defadvice magit-git-push (around my-protect-accidental-magit-git-push)
+    "Maybe ask the user for confirmation before pushing.
 
-      Advice to `magit-push-current-to-upstream' triggers this query."
-      (if (bound-and-true-p my-magit-ask-before-push)
-    ;; Arglist is (BRANCH TARGET ARGS)
-    (if (yes-or-no-p (format "Push %s branch upstream to %s? "
-           (ad-get-arg 0) (ad-get-arg 1)))
-        ad-do-it
-      (error "Push to upstream aborted by user"))
-  ad-do-it))
+    Advice to `magit-push-current-to-upstream' triggers this query."
+    (if (bound-and-true-p my-magit-ask-before-push)
+  ;; Arglist is (BRANCH TARGET ARGS)
+  (if (yes-or-no-p (format "Push %s branch upstream to %s? "
+         (ad-get-arg 0) (ad-get-arg 1)))
+      ad-do-it
+    (error "Push to upstream aborted by user"))
+ad-do-it))
 
-    (ad-activate 'magit-push-current-to-upstream)
-    (ad-activate 'magit-git-push))
+  (ad-activate 'magit-push-current-to-upstream)
+  (ad-activate 'magit-git-push))
 
-  (use-package git-link
-    :ensure t)
+(use-package forge
+  :ensure t
+  :after magit)
 
-  (use-package gitignore-mode
-    :ensure t)
+(use-package git-link
+  :ensure t)
 
-  (use-package diff-hl
-    :ensure t
-    :config
-    (global-diff-hl-mode))
+(use-package gitignore-mode
+  :ensure t)
+
+(use-package diff-hl
+  :ensure t
+  :config
+  (global-diff-hl-mode))
 #+END_SRC
 
 **** Org
@@ -630,12 +644,7 @@ We don't want that annoying floating frame that ediff uses by default.
   :diminish company-mode
   :demand
   :init
-  (setq company-idle-delay 0.3)
-  (setq company-begin-commands '(self-insert-command))
-  (setq company-minimum-prefix-length 1)
-  (setq company-tooltip-align-annotations t)
-  (setq company-tooltip-limit 20)
-  (setq company-dabbrev-downcase nil)
+  (setq company-idle-delay nil)
   :config
   (global-company-mode))
 
@@ -713,7 +722,6 @@ Lsp allows us to utilize the same interface to multiple languages
 **** JSON
 #+BEGIN_SRC emacs-lisp
   ;;JSON
-
   (use-package json-mode
     :ensure t
     :mode (("\\.json\\'" . json-mode)
@@ -797,9 +805,10 @@ Lsp allows us to utilize the same interface to multiple languages
 
 **** Scheme
 #+BEGIN_SRC emacs-lisp
-  (use-package geiser
-    ;; :ensure t
-    :load-path "./git-packages/geiser/elisp")
+(use-package geiser
+  :ensure t
+  :init
+  (setq geiser-active-implementations '(chez)))
 #+END_SRC
 
 **** Lua
@@ -826,6 +835,13 @@ Lsp allows us to utilize the same interface to multiple languages
 (use-package cider
   :ensure t)
 #+END_SRC
+
+**** YAML
+#+BEGIN_SRC emacs-lisp
+(use-package yaml-mode
+  :ensure t)
+#+END_SRC
+
 ** Review and remove
 
 This is an issue with Emacs 27 on Mac OS

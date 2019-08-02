@@ -267,10 +267,10 @@ We don't want that annoying floating frame that ediff uses by default.
 ** Package Configuration
 *** General
 #+BEGIN_SRC emacs-lisp
-(use-package rebecca-theme
+(use-package cloud-theme
   :ensure t
   :config
-  (load-theme 'rebecca t))
+  (load-theme 'cloud t))
 
 (use-package golden-ratio-scroll-screen
   :ensure t
@@ -811,6 +811,7 @@ Lsp allows us to utilize the same interface to multiple languages
 (use-package geiser
   :ensure t
   :init
+  (setq geiser-chez-binary "chez")
   (setq geiser-active-implementations '(chez)))
 #+END_SRC
 

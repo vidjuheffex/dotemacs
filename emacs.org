@@ -63,7 +63,7 @@ Make sure [[https://github.com/jwiegley/use-package][use-package]] is available,
      (package-install 'use-package))
    (setq use-package-ensure-all t)
    (require 'use-package)
- #+END_SRC 
+ #+END_SRC
 
 ** Editor Configuration                                         :noexport_1:
 
@@ -223,8 +223,8 @@ Set titlebar style
     "Kill all dired buffers."
     (interactive)
     (mapc (lambda (buffer)
-      (when (eq 'dired-mode (buffer-local-value 'major-mode buffer)) 
-        (kill-buffer buffer))) 
+      (when (eq 'dired-mode (buffer-local-value 'major-mode buffer))
+        (kill-buffer buffer)))
     (buffer-list)))
 
    (defun kill-other-buffers ()
@@ -266,12 +266,12 @@ We don't want that annoying floating frame that ediff uses by default.
 
 ** Package Configuration
 *** General
-#+BEGIN_SRC emacs-lisp 
+#+BEGIN_SRC emacs-lisp
 (use-package rebecca-theme
   :ensure t
   :config
   (load-theme 'rebecca t))
- 
+
 (use-package golden-ratio-scroll-screen
   :ensure t
   :bind(([remap scroll-down-command] . golden-ratio-scroll-screen-down)
@@ -692,6 +692,9 @@ Lsp allows us to utilize the same interface to multiple languages
 
 (use-package js2-mode
   :ensure t
+  :init
+  (setq js2-mode-show-parse-errors nil)
+  (setq js2-mode-show-strict-warnings nil)
   :hook
   (js-mode . js2-minor-mode))
 
@@ -744,7 +747,7 @@ Lsp allows us to utilize the same interface to multiple languages
      ("\\.php\\'" . web-mode)
      ("\\.mustache\\'" . web-mode)
      ("/\\(views\\|html\\|theme\\|templates\\)/.*\\.php\\'" . web-mode))
-    :init  
+    :init
     (setq web-mode-markup-indent-offset 2)
     (setq web-mode-attr-indent-offset 2)
     (setq web-mode-attr-value-indent-offset 2)

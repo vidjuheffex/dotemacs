@@ -90,7 +90,13 @@ Make sure [[https://github.com/jwiegley/use-package][use-package]] is available,
 *** Enable shift+arrow keys to change active window
 
 #+BEGIN_SRC emacs-lisp
-  (windmove-default-keybindings)
+(use-package windmove
+  :ensure nil
+  :bind
+  (("C-M-<left>". windmove-left)
+   ("C-M-<right>". windmove-right)
+   ("C-M-<up>". windmove-up)
+   ("C-M-<down>". windmove-down)))
 #+END_SRC
 
 *** On some touchpads mouse-2 annoys me (middle wheel click), disable it
@@ -145,7 +151,7 @@ Set titlebar style
 (line-number-mode 1)
 (column-number-mode 1)
 (show-paren-mode 1)
-(setq show-paren-style 'expression)
+(setq show-paren-style 'parenthesis)
 (global-hl-line-mode 1)
 (eldoc-mode 1)
 (setq max-lisp-eval-depth 10000)
@@ -267,10 +273,10 @@ We don't want that annoying floating frame that ediff uses by default.
 ** Package Configuration
 *** General
 #+BEGIN_SRC emacs-lisp
-(use-package cloud-theme
+(use-package monokai-theme
   :ensure t
   :config
-  (load-theme 'cloud t))
+  (load-theme 'monokai t))
 
 (use-package golden-ratio-scroll-screen
   :ensure t
@@ -445,6 +451,12 @@ We don't want that annoying floating frame that ediff uses by default.
   :hook (restclient-mode . (lambda ()
                              (add-to-list 'company-backends 'company-restclient))))
 
+(use-package vterm
+  :ensure t
+  :init
+  (defalias 'ansi-term (lambda (&rest _) (call-interactively #'vterm)))
+  (defalias 'term (lambda (&rest _) (call-interactively #'vterm))))
+
 (use-package olivetti
   :ensure t
   :init
@@ -590,11 +602,6 @@ ad-do-it))
           (expand-file-name "~/Dropbox/jars/ditaa0_6b.jar"))
     (setq org-ditaa-eps-jar-path
           (expand-file-name "~/Dropbox/jars/DitaaEps.jar"))
-    ;; Make windmove work in org-mode:
-    (add-hook 'org-shiftup-final-hook 'windmove-up)
-    (add-hook 'org-shiftleft-final-hook 'windmove-left)
-    (add-hook 'org-shiftdown-final-hook 'windmove-down)
-    (add-hook 'org-shiftright-final-hook 'windmove-right)
     :bind
     (("C-c l" . 'org-store-link)
      ("C-c a" . 'org-agenda))
@@ -814,6 +821,15 @@ Lsp allows us to utilize the same interface to multiple languages
   (setq geiser-chez-binary "chez")
   (setq geiser-active-implementations '(chez)))
 #+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package rainbow-delimiters
+  :ensure t
+  :hook (prog-mode . rainbow-delimiters-mode))
+#+END_SRC
+
+#+RESULTS:
+| rainbow-delimiters-mode | rainbow-delimeters-mode | geiser-mode--maybe-activate |
 
 **** Lua
 #+BEGIN_SRC emacs-lisp
